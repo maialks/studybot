@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.post('/interactions', (request, response, error, next) => {
   console.log(request);
-  response.statuus(201).end();
+  response.status(201).end();
 });
 
 module.exports = router;
