@@ -2,12 +2,25 @@ require('dotenv').config({ path: '.env' });
 
 const express = require('express');
 const router = express.Router();
-// const { verifyKeyMiddleware } = require('discord-interactions');
+const {
+  verifyKeyMiddleware,
+  InteractionType,
+  InteractionResponseFlags,
+  InteractionResponseType,
+} = require('discord-interactions');
 // const { PUBLIC_KEY } = process.env;
 
-router.post('/interactions', (request, response) => {
-  response.status(200).send();
-});
+router.post(
+  '/interactions',
+  verifyKeyMiddleware(process.env.PUBLIC_KEY),
+  (request, response) => {
+    const { id, type, data } = request.body;
+
+    if (type === InteractionType.PING) {
+      return res.send({ type: InteractionResponseType.PONG });
+    }
+  }
+);
 
 router.post('/', (request, response) => {
   response.status(201).send();
