@@ -6,6 +6,6 @@ const { requestLogger } = require('./utils/logger');
 
 app.use(express.json());
 // app.use(express.urlencoded({ extended: true }));
-app.use(requestLogger);
+// app.use(requestLogger);
 app.use('/', router);
 module.exports = app;
