@@ -20,17 +20,26 @@ router.post(
     if (type === InteractionType.PING) {
       return res.send({ type: InteractionResponseType.PONG });
     }
+
+    if (type === InteractionType.APPLICATION_COMMAND) {
+      const { name } = data;
+    }
   }
 );
 
 router.post(
-  'webhook',
+  '/webhook',
   verifyKeyMiddleware(process.env.PUBLIC_KEY),
   async (request, response) => {
-    const { content, channelId, author } = request.body;
+    const { type } = request.body;
     console.log(request.body);
-    if (type === InteractionType.PING) {
-      return res.send({ type: InteractionResponseType.PONG });
+    if (type === 0) {
+      return res.status(204).send({});
+    }
+
+    if (type === 1) {
+      console.log('evento');
+      console.log(request.body.event);
     }
   }
 );
