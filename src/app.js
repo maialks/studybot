@@ -3,27 +3,20 @@ const express = require('express');
 const app = express();
 const router = require('./controllers/routes');
 const { requestLogger } = require('./utils/logger');
-
-const { Client, Events, GatewayIntentBits } = require('discord.js');
+const { Client, GatewayIntentBits } = require('discord.js');
+const { ClientReady, MessageHandler } = require('./events');
 
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildVoiceStates,
   ],
 });
 
-client.once(Events.ClientReady, (readyClient) => {
-  console.log(`Ready! Logged in as ${readyClient.user.tag}`);
-});
-
-client.on(Events.MessageCreate, (message) => {
-  console.log(message);
-  if (message.content === '!ping') {
-    message.reply('Pong! 🏓');
-  }
-});
+client.on(ClientReady.name, ClientReady.execute);
+client.on(MessageHandler.name, MessageHandler.execute);
 
 client.login(process.env.BOT_TOKEN);
 
