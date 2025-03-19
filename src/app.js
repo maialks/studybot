@@ -18,13 +18,14 @@ client.once(Events.ClientReady, (readyClient) => {
   console.log(`Ready! Logged in as ${readyClient.user.tag}`);
 });
 
-client.login(process.env.BOT_TOKEN);
-
 client.on(Events.MessageCreate, (message) => {
+  console.log(message);
   if (message.content === '!ping') {
     message.reply('Pong! 🏓');
   }
 });
+
+client.login(process.env.BOT_TOKEN);
 
 app.use(express.json());
 app.use(requestLogger);
