@@ -35,17 +35,16 @@ const voiceStateHadnler = {
     if (!oldState.channelId) {
       newState.voiceJoinedTimestamp = Date.now();
     } else {
+      const user = newState.member.user;
       const channel = 1350465997001195520;
       console.log(
-        `Ficou por ${oldState.voiceJoinedTimestamp - Date.now() / 1000}s`
+        `Parabéns ${user.globalName}, você estudou por ${
+          ((Date.now() - oldState.voiceJoinedTimestamp) / 1000) * 60
+        }min`
       );
     }
   },
 };
-
-// const voiceChannelJoin = {
-//   name: Events.VoiceStateUpdate,
-// };
 
 module.exports = {
   ClientReady,
