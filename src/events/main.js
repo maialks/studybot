@@ -32,29 +32,26 @@ const MessageHandler = {
 const voiceStateHadnler = {
   name: Events.VoiceStateUpdate,
   execute(oldState, newState) {
+    const user = newState.member.user;
     if (!oldState.channelId) {
+      console.log(`${user.globalName} Joined a channel`);
       newState.voiceJoinedTimestamp = Date.now();
       newState[fristJoin] = newState.fristJoin || newState.channelId;
     } else if (
       !newState.channelId ||
       newState.fristJoin !== newState.channelId
     ) {
-      const user = newState.member.user;
       const channel = newState.guild.channels.cache.get('1350465997001195520');
-      console.log('Old ------');
-      console.log(oldState);
-      console.log('New ------');
-      console.log(newState);
       console.log(
         `Parabéns ${user.globalName}, você estudou por ${Math.ceil(
           (Date.now() - oldState.voiceJoinedTimestamp) / 1000 / 60
         )}min`
       );
-      // channel.send(
-      //   `Parabéns ${user.globalName}, você estudou por ${
-      //    Math.ceil(((Date.now() - oldState.voiceJoinedTimestamp) / 1000) / 60)
-      //  }min`
-      // );
+      channel.send(
+        `Parabéns <@${user.id}>, você estudou por ${Math.ceil(
+          (Date.now() - oldState.voiceJoinedTimestamp) / 1000 / 60
+        )}min`
+      );
     }
   },
 };
