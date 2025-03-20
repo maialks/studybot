@@ -1,4 +1,5 @@
 const { Events, ActivityType } = require('discord.js');
+const { formatTime } = require('../utils/formmaters');
 
 const ClientReady = {
   name: Events.ClientReady,
@@ -33,24 +34,23 @@ const voiceStateHadnler = {
   name: Events.VoiceStateUpdate,
   execute(oldState, newState) {
     const user = newState.member.user;
+    newState.studyChannels = ['1350284781128122451', '1352418837819162634'];
     if (!oldState.channelId) {
-      console.log(`${user.globalName} Joined a channel`);
+      console.log(`${user.globalName} joined a channel`);
       newState.voiceJoinedTimestamp = Date.now();
-      newState[fristJoin] = newState.fristJoin || newState.channelId;
+      // newState.fristJoin = newState.fristJoin || newState.channelId;
     } else if (
       !newState.channelId ||
-      newState.fristJoin !== newState.channelId
+      !newState.studyChannels.includes(newState.channel)
     ) {
-      const channel = newState.guild.channels.cache.get('1350465997001195520');
-      console.log(
-        `Parabéns ${user.globalName}, você estudou por ${Math.ceil(
-          (Date.now() - oldState.voiceJoinedTimestamp) / 1000 / 60
-        )}min`
+      const { hrs, min } = formatTime(
+        Date.now() - oldState.voiceJoinedTimestamp
       );
+      const channel = newState.guild.channels.cache.get('1350465997001195520');
       channel.send(
-        `Parabéns <@${user.id}>, você estudou por ${Math.ceil(
-          (Date.now() - oldState.voiceJoinedTimestamp) / 1000 / 60
-        )}min`
+        `Parabéns <@${user.id}>, você estudou por ${
+          hrs ? `${hrs}h e ${min}min` : `${min}min`
+        }`
       );
     }
   },
