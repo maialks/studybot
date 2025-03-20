@@ -45,4 +45,5 @@ const voiceStateHadnler = {
 module.exports = {
   ClientReady,
   MessageHandler,
+  voiceStateHadnler,
 };

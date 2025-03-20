@@ -4,7 +4,11 @@ const app = express();
 const router = require('./controllers/routes');
 const { requestLogger } = require('./utils/logger');
 const { Client, GatewayIntentBits } = require('discord.js');
-const { ClientReady, MessageHandler } = require('./events/main');
+const {
+  ClientReady,
+  MessageHandler,
+  voiceStateHadnler,
+} = require('./events/main');
 
 const client = new Client({
   intents: [
@@ -17,6 +21,7 @@ const client = new Client({
 
 client.on(ClientReady.name, ClientReady.execute);
 client.on(MessageHandler.name, MessageHandler.execute);
+client.on(voiceStateHadnler.name, voiceStateHadnler.execute);
 
 client.login(process.env.BOT_TOKEN);
 
