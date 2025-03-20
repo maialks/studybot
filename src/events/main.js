@@ -34,7 +34,10 @@ const voiceStateHadnler = {
   execute(oldState, newState) {
     if (!oldState.channelId) {
       newState.voiceJoinedTimestamp = Date.now();
-    } else {
+    } else if (
+      !newState.channelId ||
+      newState.channelId !== oldState.channelId
+    ) {
       const user = newState.member.user;
       const channel = newState.guild.channels.cache.get('1350465997001195520');
       console.log('Old ------');
@@ -42,14 +45,14 @@ const voiceStateHadnler = {
       console.log('New ------');
       console.log(newState);
       console.log(
-        `Parabéns ${user.globalName}, você estudou por ${
-          ((Date.now() - oldState.voiceJoinedTimestamp) / 1000) * 60
-        }min`
+        `Parabéns ${user.globalName}, você estudou por ${Math.ceil(
+          (Date.now() - oldState.voiceJoinedTimestamp) / 1000 / 60
+        )}min`
       );
       // channel.send(
       //   `Parabéns ${user.globalName}, você estudou por ${
-      //     ((Date.now() - oldState.voiceJoinedTimestamp) / 1000) * 60
-      //   }min`
+      //    Math.ceil(((Date.now() - oldState.voiceJoinedTimestamp) / 1000) / 60)
+      //  }min`
       // );
     }
   },
