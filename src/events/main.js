@@ -38,14 +38,16 @@ const voiceStateHadnler = {
     if (!oldState.channelId) {
       console.log(`${user.globalName} joined a channel`);
       newState.voiceJoinedTimestamp = Date.now();
-      // newState.fristJoin = newState.fristJoin || newState.channelId;
     } else if (
-      !newState.channelId ||
-      !newState.studyChannels.includes(newState.channel)
+      (!newState.channelId &&
+        oldState.studyChannels.includes(oldState.channelId)) ||
+      (newState.channelId &&
+        !newState.studyChannels.includes(newState.channelId))
     ) {
       const { hrs, min } = formatTime(
         Date.now() - oldState.voiceJoinedTimestamp
       );
+      if (!min) return console.log('Estudou nada ai');
       const channel = newState.guild.channels.cache.get('1350465997001195520');
       channel.send(
         `Parabéns <@${user.id}>, você estudou por ${
