@@ -36,12 +36,21 @@ const voiceStateHadnler = {
       newState.voiceJoinedTimestamp = Date.now();
     } else {
       const user = newState.member.user;
-      const channel = 1350465997001195520;
+      const channel = newState.guild.channels.cache.get('1350465997001195520');
+      console.log('Old ------');
+      console.log(oldState);
+      console.log('New ------');
+      console.log(newState);
       console.log(
         `Parabéns ${user.globalName}, você estudou por ${
           ((Date.now() - oldState.voiceJoinedTimestamp) / 1000) * 60
         }min`
       );
+      // channel.send(
+      //   `Parabéns ${user.globalName}, você estudou por ${
+      //     ((Date.now() - oldState.voiceJoinedTimestamp) / 1000) * 60
+      //   }min`
+      // );
     }
   },
 };
