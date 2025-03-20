@@ -34,9 +34,10 @@ const voiceStateHadnler = {
   execute(oldState, newState) {
     if (!oldState.channelId) {
       newState.voiceJoinedTimestamp = Date.now();
+      newState[fristJoin] = newState.fristJoin || newState.channelId;
     } else if (
       !newState.channelId ||
-      newState.channelId !== oldState.channelId
+      newState.fristJoin !== newState.channelId
     ) {
       const user = newState.member.user;
       const channel = newState.guild.channels.cache.get('1350465997001195520');
