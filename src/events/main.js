@@ -32,9 +32,14 @@ const MessageHandler = {
 const voiceStateHadnler = {
   name: Events.VoiceStateUpdate,
   execute(oldState, newState) {
-    console.log(oldState);
-    console.log('...');
-    console.log(newState);
+    if (!oldState.channelId) {
+      newState.voiceJoinedTimestamp = Date.now();
+    } else {
+      const channel = 1350465997001195520;
+      console.log(
+        `Ficou por ${oldState.voiceJoinedTimestamp - Date.now() / 1000}s`
+      );
+    }
   },
 };
 
