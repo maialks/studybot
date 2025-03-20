@@ -1,4 +1,4 @@
-const { Events } = require('discord.js');
+const { Events, ActivityType } = require('discord.js');
 
 const ClientReady = {
   name: Events.ClientReady,
@@ -7,7 +7,7 @@ const ClientReady = {
     console.log(`✅ ${client.user.tag} online!`);
     client.user.setActivity('Discord.js Guide', {
       type: ActivityType.Watching,
-    }); // Exemplo de status
+    });
   },
 };
 
@@ -26,6 +26,15 @@ const MessageHandler = {
     if (message.author.globalName === 'Carolina Oliveira') {
       message.reply('chata');
     }
+  },
+};
+
+const voiceStateHadnler = {
+  name: Events.VoiceStateUpdate,
+  execute(oldState, newState) {
+    console.log(oldState);
+    console.log('...');
+    console.log(newState);
   },
 };
 
