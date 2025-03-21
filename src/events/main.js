@@ -1,6 +1,10 @@
 const { Events, ActivityType } = require('discord.js');
 const { formatTime } = require('../utils/formmaters');
 
+const studyChannels = new Set(['1350284781128122451', '1352418837819162634']);
+const voiceJoinTimes = new Map();
+const REPORT_CHANNEL_ID = '1350465997001195520';
+
 const ClientReady = {
   name: Events.ClientReady,
   once: true,
@@ -33,27 +37,26 @@ const MessageHandler = {
 const voiceStateHadnler = {
   name: Events.VoiceStateUpdate,
   execute(oldState, newState) {
-    const user = newState.member.user;
-    newState.studyChannels = ['1350284781128122451', '1352418837819162634'];
-    if (!oldState.channelId) {
-      console.log(`${user.globalName} joined a channel`);
-      newState.voiceJoinedTimestamp = Date.now();
-    } else if (
-      (!newState.channelId &&
-        oldState.studyChannels.includes(oldState.channelId)) ||
-      (newState.channelId &&
-        !newState.studyChannels.includes(newState.channelId))
-    ) {
-      const { hrs, min } = formatTime(
-        Date.now() - oldState.voiceJoinedTimestamp
-      );
+    const user = newState.member?.user;
+
+    const wasStudying = studyChannels.has(oldState.channelId);
+    const nowStudying = studyChannels.has(newState.channelId);
+
+    if (nowStudying && !wasStudying) {
+      console.log(`${user.globalName} joined a study channel`);
+      voiceJoinTimes.set(user.id, Date.now());
+    }
+    if (wasStudying && !nowStudying) {
+      const joinTime = voiceJoinTimes.get(user.id);
+      const { hrs, min } = formatTime(Date.now() - joinTime);
       if (!min) return console.log('Estudou nada ai');
-      const channel = newState.guild.channels.cache.get('1350465997001195520');
+      const channel = newState.guild.channels.cache.get(REPORT_CHANNEL_ID);
       channel.send(
         `Parabéns <@${user.id}>, você estudou por ${
           hrs ? `${hrs}h e ${min}min` : `${min}min`
         }`
       );
+      console.log(`${user.globalName} stopped studying`);
     }
   },
 };
