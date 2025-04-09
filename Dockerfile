@@ -15,5 +15,5 @@ COPY src/ ./src/
 # Copia explicitamente a pasta src
 
 EXPOSE 3000
-CMD ["node", "src/index.js"]  
+CMD ["sh", "-c", "npm run prod"]
 # Caminho relativo correto

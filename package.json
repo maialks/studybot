@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon app.js"
+    "createdb": "docker create --name studybot-test -p 27017:27017 mongo",
+    "dev": "docker start studybot-test && sleep 2 && NODE_ENV=development nodemon ./src/index.js",
+    "prod": "NODE_ENV=production node ./src/index.js"
   },
   "author": "",
   "license": "ISC",
@@ -14,6 +16,8 @@
     "discord.js": "^14.18.0",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "express-async-errors": "^3.1.1",
+    "mongoose": "^8.13.2",
     "morgan": "^1.10.0"
   },
   "devDependencies": {
