@@ -1,5 +1,5 @@
-const { SlashCommandBuilder, ChannelType } = require('discord.js');
-const Server = require('../../models/server');
+const { SlashCommandBuilder, ChannelType } = require('discord.js')
+const Server = require('../../models/server')
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -15,37 +15,36 @@ module.exports = {
 
   async execute(interaction) {
     try {
-      const channel = interaction.options.getChannel('channel');
-      const serverId = channel.guildId;
+      const channel = interaction.options.getChannel('channel')
+      const serverId = channel.guildId
 
-      const server = await Server.findOne({ serverId });
+      const server = await Server.findOne({ serverId })
 
       if (server?.studyChannels?.length >= 5) {
         return await interaction.reply(
           `You can only track 5 channels. Use \`/study-channels-remove\` to free up space.`
-        );
+        )
       }
 
       if (server?.studyChannels.includes(channel.id)) {
         return await interaction.reply(
           `Channel <#${channel.id}> is already tracked. Use \`/study-channels-list\` to see all.`
-        );
+        )
       }
-      server.studyChannels.push(channel.id);
-      server.markModified('studyChannels');
-      await server.save();
+      server.reportChannel ||= interaction.channelId
+      server.studyChannels.push(channel.id)
+      server.markModified('studyChannels')
+      await server.save()
 
       const channelsList = server.studyChannels
         .map((id) => `• <#${id}>`)
-        .join('\n');
-      return await interaction.reply(
-        `Study channels updated:\n${channelsList}`
-      );
+        .join('\n')
+      return await interaction.reply(`Study channels updated:\n${channelsList}`)
     } catch (err) {
-      console.error(err);
+      console.error(err)
       return await interaction.reply(
         'An error occurred while adding the study channel.'
-      );
+      )
     }
   },
-};
+}
