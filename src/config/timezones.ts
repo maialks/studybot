@@ -1,4 +1,6 @@
-const genericTimezones = [
+type Timezone = { name: string; value: string };
+
+const genericTimezones: Timezone[] = [
   { name: 'UTC-12:00', value: 'Etc/GMT+12' },
   { name: 'UTC-11:00', value: 'Etc/GMT+11' },
   { name: 'UTC-10:00', value: 'Etc/GMT+10' },
@@ -27,7 +29,7 @@ const genericTimezones = [
   { name: 'UTC+13:00', value: 'Etc/GMT-13' },
   { name: 'UTC+14:00', value: 'Etc/GMT-14' },
 ];
-const timezones = [
+const timezones: Timezone[] = [
   { name: '🌍 UTC (Default)', value: 'UTC' },
   { name: '🇧🇷 Brazil', value: 'America/Sao_Paulo' },
   { name: '🇺🇸 USA (New York)', value: 'America/New_York' },
@@ -66,4 +68,4 @@ const timezones = [
   { name: '🇮🇷 Iran', value: 'Asia/Tehran' },
 ];
 
-module.exports = [...timezones, ...genericTimezones];
+export default [...timezones, ...genericTimezones];

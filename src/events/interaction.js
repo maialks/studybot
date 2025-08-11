@@ -1,6 +1,6 @@
 const { InteractionType } = require('discord.js');
 const Server = require('../models/server');
-const timezones = require('../utils/timezones');
+const timezones = require('../config/timezones');
 
 const commands = require('../utils/get-commands')(true);
 
