@@ -40,7 +40,7 @@ async function loadDir(client: Client, dir: string) {
 
     const isValidEvent = (possibleEv: AnyEvent): boolean =>
       !!possibleEv?.name && typeof possibleEv.execute === 'function';
-    // !! converte para boolean
+    //!! converte para boolean
 
     type wrappedEvent = (...agrs: any[]) => Promise<unknown>;
     const wrapEvent =
@@ -80,7 +80,7 @@ export async function registerEvents(client: Client): Promise<void> {
   const eventsPath = path.join(__dirname, '..', 'events');
 
   if (!fs.existsSync(eventsPath)) {
-    logger.warn('Events folder not found, skipping event registration.');
+    logger.warn('vents folder not found, skipping event registration.');
     return;
   }
 

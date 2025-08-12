@@ -1,5 +1,4 @@
-const mongoose = require('mongoose');
-
+import mongoose from 'mongoose';
 const serverSchema = new mongoose.Schema(
   {
     serverId: { type: String, required: true },
@@ -16,4 +15,4 @@ const serverSchema = new mongoose.Schema(
   { minimize: false }
 );
 
-module.exports = mongoose.model('server', serverSchema, 'servers');
+export default mongoose.model('server', serverSchema, 'servers');
