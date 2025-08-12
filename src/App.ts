@@ -17,7 +17,8 @@ export class App {
     await connectMongo(env.MONGODB_URI);
     // registerEvents(this.discord);
     // registerCommands();
-    await this.discord.login(env.BOT_TOKEN);
+    const teste = await this.discord.login(env.BOT_TOKEN);
+    console.log(teste);
 
     this.express.listen(env.PORT, () => {
       logger.info(`express running on port ${env.PORT}`);

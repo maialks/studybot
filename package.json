@@ -1,26 +1,30 @@
 {
   "name": "studybot",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "main.ts",
   "scripts": {
     "createdb": "docker create --name studybot-test -p 27017:27017 mongo",
-    "dev": "docker start studybot-test && sleep 2 && NODE_ENV=development nodemon ./src/index.js",
-    "prod": "NODE_ENV=production node ./src/index.js"
+    "startdb": "docker start studybot-test",
+    "stopdb": "docker stop studybot-test",
+    "dev": "docker start studybot-test && sleep 5 && NODE_ENV=development ts-node-dev --esm ./src/main.ts"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "axios": "^1.8.3",
-    "discord-interactions": "^4.1.1",
-    "discord.js": "^14.18.0",
-    "dotenv": "^16.4.7",
-    "express": "^4.21.2",
-    "express-async-errors": "^3.1.1",
-    "mongoose": "^8.13.2",
+    "@types/express": "^5.0.3",
+    "@types/morgan": "^1.9.9",
+    "axios": "^1.7.7",
+    "discord-interactions": "^4.3.0",
+    "discord.js": "^14.16.3",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "mongoose": "^8.7.3",
     "morgan": "^1.10.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.9"
+    "@types/node": "^22.7.5",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.9.2"
   }
 }
