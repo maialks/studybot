@@ -4,7 +4,7 @@ import { src } from '../utils/constants';
 
 const sessionSchema = new mongoose.Schema<Session>({
   src: { type: String, enum: src, required: true },
-  user: { type: String, required: true },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'Users', required: true },
   start: { type: Date, required: true },
   end: { type: Date },
   duration: { type: Number }, // já calculado para facilitar relatórios

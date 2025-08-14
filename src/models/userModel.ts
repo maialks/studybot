@@ -9,6 +9,4 @@ const userSchema = new mongoose.Schema<User>(
   { minimize: false } // mantém campos mesmo que vazios
 );
 
-userSchema.index({ discordId: 1 });
-
 export default mongoose.model<User>('User', userSchema, 'users');

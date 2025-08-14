@@ -11,6 +11,4 @@ const serverSchema = new mongoose.Schema<Server>(
   { minimize: false }
 );
 
-serverSchema.index({ serverId: 1 });
-
 export default mongoose.model<Server>('Servers', serverSchema, 'servers');

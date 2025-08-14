@@ -1,11 +1,12 @@
 import User from '../models/userModel';
+import { User as UserInterface } from '../types';
 import logger from '../utils/logger';
 
-const createUser = async function (discordId: string): Promise<void> {
+const createUser = async function (discordId: string): Promise<UserInterface> {
   try {
-    const user = new User({ discordId });
-    await user.save();
-    logger.info(`user ${user} saved sucessfully`);
+    const user = await User.create({ discordId });
+    logger.info(`user ${user.discordId} saved sucessfully`);
+    return user;
   } catch (error: unknown) {
     throw error;
   }
@@ -49,9 +50,20 @@ const delServer = async function (
   }
 };
 
+const findUser = async (discordId: string): Promise<UserInterface> => {
+  try {
+    const user = await User.findOne({ discordId });
+    if (!user) throw new Error('user not found');
+    return user;
+  } catch (error: unknown) {
+    throw error;
+  }
+};
+
 export default {
   createUser,
   deleteUser,
   delServer,
   addServer,
+  findUser,
 };

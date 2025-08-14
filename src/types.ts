@@ -1,5 +1,5 @@
 import type { Awaitable, Events } from 'discord.js';
-import { Document } from 'mongoose';
+import type { Document, Types } from 'mongoose';
 import { src } from './utils/constants';
 
 export interface EventHandler<T extends Events = Events> {
@@ -11,8 +11,9 @@ export interface EventHandler<T extends Events = Events> {
 type SourceType = (typeof src)[number];
 
 export interface Session extends Document {
+  _id: Types.ObjectId;
   src: SourceType;
-  user: string;
+  user: Types.ObjectId;
   start: Date;
   end: Date;
   duration: number;
@@ -22,11 +23,13 @@ export interface Session extends Document {
 export type NewSession = Pick<Session, 'src' | 'user' | 'date' | 'start'>;
 
 export interface User extends Document {
+  _id: Types.ObjectId;
   discordId: string;
   servers: string[];
 }
 
 export interface Server extends Document {
+  _id: Types.ObjectId;
   serverId: string;
   studyChannels: string[];
   reportChannel: string;

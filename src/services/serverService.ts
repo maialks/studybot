@@ -1,12 +1,14 @@
 import Server from '../models/serverModel';
 import logger from '../utils/logger';
+import { Server as ServerInterface } from '../types';
 
-const createServer = async function (serverId: string) {
+const createServer = async function (
+  serverId: string
+): Promise<ServerInterface> {
   try {
-    const server = new Server({ serverId });
-    await server.save();
+    const server = await Server.create({ serverId });
     logger.info(`server ${serverId} saved sucessfully`);
-    return true;
+    return server;
   } catch (error: unknown) {
     throw error;
   }
@@ -21,7 +23,18 @@ const deleteServer = async function (serverId: string) {
   }
 };
 
+const findServer = async function (serverId: string): Promise<ServerInterface> {
+  try {
+    const server = await Server.findOne({ serverId });
+    if (!server) throw new Error('server not found');
+    return server;
+  } catch (error: unknown) {
+    throw error;
+  }
+};
+
 export default {
   createServer,
   deleteServer,
+  findServer,
 };
