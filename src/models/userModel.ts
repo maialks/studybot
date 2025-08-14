@@ -11,4 +11,4 @@ const userSchema = new mongoose.Schema<User>(
 
 userSchema.index({ discordId: 1 });
 
-export default mongoose.model<User>('users', userSchema, 'users');
+export default mongoose.model<User>('User', userSchema, 'users');

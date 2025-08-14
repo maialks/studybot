@@ -1,5 +1,6 @@
 import type { Awaitable, Events } from 'discord.js';
-import mongoose, { Document } from 'mongoose';
+import { Document } from 'mongoose';
+import { src } from './utils/constants';
 
 export interface EventHandler<T extends Events = Events> {
   name: T;
@@ -7,14 +8,18 @@ export interface EventHandler<T extends Events = Events> {
   execute: (...args: any[]) => Awaitable<void>;
 }
 
+type SourceType = (typeof src)[number];
+
 export interface Session extends Document {
-  src: string; // origem da sessão (ex.: canal de voz)
-  user: mongoose.Types.ObjectId; // referência ao usuário
-  start: Date; // início da sessão
-  end: Date; // fim da sessão
-  duration: number; // duração em segundos ou minutos
-  date: Date; // data-base da sessão (pode ser o mesmo que start)
+  src: SourceType;
+  user: string;
+  start: Date;
+  end: Date;
+  duration: number;
+  date: Date;
 }
+
+export type NewSession = Pick<Session, 'src' | 'user' | 'date' | 'start'>;
 
 export interface User extends Document {
   discordId: string;
@@ -27,3 +32,14 @@ export interface Server extends Document {
   reportChannel: string;
   timezone: string;
 }
+
+export type DateFormat =
+  | 'yyyy-MM-dd HH:mm:ss' // Exemplo: 2025-08-14 11:30:00
+  | 'yyyy-MM-dd' // Exemplo: 2025-08-14
+  | 'HH:mm:ss' // Exemplo: 11:30:00
+  | 'HH:mm' // Exemplo: 11:30
+  | 'MMM dd' // Exemplo: Aug 14
+  | 'MM/dd/yyyy' // Exemplo: 08/14/2025
+  | 'PPpp' // Exemplo: Aug 14, 2025 at 11:30:00 AM
+  | 'P' // Exemplo: 08/14/2025
+  | 'p'; // Exemplo: 11:30 AM

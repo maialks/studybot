@@ -1,9 +1,10 @@
 import mongoose from 'mongoose';
 import type { Session } from '../types';
+import { src } from '../utils/constants';
 
 const sessionSchema = new mongoose.Schema<Session>({
-  src: { type: String, required: true },
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  src: { type: String, enum: src, required: true },
+  user: { type: String, required: true },
   start: { type: Date, required: true },
   end: { type: Date },
   duration: { type: Number }, // já calculado para facilitar relatórios
@@ -11,5 +12,9 @@ const sessionSchema = new mongoose.Schema<Session>({
 });
 
 sessionSchema.index({ user: 1, date: 1 });
+sessionSchema.index(
+  { user: 1 },
+  { partialFilterExpression: { end: null }, unique: true }
+);
 
-export default mongoose.model<Session>('sessions', sessionSchema, 'sessions');
+export default mongoose.model<Session>('Session', sessionSchema, 'sessions');

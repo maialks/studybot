@@ -6,25 +6,26 @@
     "createdb": "docker create --name studybot-test -p 27017:27017 mongo",
     "startdb": "docker start studybot-test",
     "stopdb": "docker stop studybot-test",
-    "dev": "docker start studybot-test && sleep 5 && NODE_ENV=development ts-node-dev --esm ./src/main.ts"
+    "dev": "tsx ./src/main.ts"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
     "@types/express": "^5.0.3",
-    "@types/morgan": "^1.9.9",
     "axios": "^1.7.7",
+    "date-fns": "^4.1.0",
+    "date-fns-tz": "^3.2.0",
     "discord-interactions": "^4.3.0",
     "discord.js": "^14.16.3",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
-    "mongoose": "^8.7.3",
-    "morgan": "^1.10.0"
+    "mongoose": "^8.7.3"
   },
   "devDependencies": {
     "@types/node": "^22.7.5",
-    "ts-node-dev": "^2.0.0",
-    "typescript": "^5.9.2"
+    "tsx": "^4.20.4",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
   }
 }
