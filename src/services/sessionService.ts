@@ -1,6 +1,6 @@
-// import { mapCloseSection } from '../mappers/sessionMapper';
 import Session from '../models/sessionModel';
 import type { NewSession, Session as SessionInterface } from '../types';
+import type { Types } from 'mongoose';
 
 const createSessionEntry = async function (params: NewSession): Promise<void> {
   try {
@@ -11,7 +11,7 @@ const createSessionEntry = async function (params: NewSession): Promise<void> {
 };
 
 const endOpenSession = async function (
-  user: string
+  user: Types.ObjectId
 ): Promise<SessionInterface> {
   const now = new Date();
   try {

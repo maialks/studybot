@@ -38,6 +38,7 @@ export interface Server extends Document {
 
 export type DateFormat =
   | 'yyyy-MM-dd HH:mm:ss' // Exemplo: 2025-08-14 11:30:00
+  | 'dd-MM HH:mm:ss' // 14-07 11:30:00
   | 'yyyy-MM-dd' // Exemplo: 2025-08-14
   | 'HH:mm:ss' // Exemplo: 11:30:00
   | 'HH:mm' // Exemplo: 11:30

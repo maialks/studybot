@@ -4,7 +4,7 @@ import userService from '../services/userService';
 import { Events } from 'discord.js';
 import type { VoiceState } from 'discord.js';
 import studySessionService from '../services/studySessionService';
-import { Types } from 'mongoose';
+import buildEmbed from '../builders/endSessionEmbed';
 
 const voiceStateHandler = {
   name: Events.VoiceStateUpdate,
@@ -41,6 +41,15 @@ const voiceStateHandler = {
 
     if (!wasStudying && nowStudying)
       studySessionService.startStudySession(user._id);
+
+    if (wasStudying && !nowStudying) {
+      const closedSession = await studySessionService.endStudySession(user._id);
+      const channel = await newState.guild.channels.fetch(server.reportChannel);
+      if (!channel || !channel.isTextBased()) return;
+      channel.send({
+        embeds: [buildEmbed(closedSession, server.timezone, member)],
+      });
+    }
   },
 };
 
