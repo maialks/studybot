@@ -40,4 +40,16 @@ const endOpenSession = async function (
   }
 };
 
-export default { createSessionEntry, endOpenSession };
+const sessionsInInterval = async function (
+  user: Types.ObjectId,
+  start: Date,
+  end: Date
+): Promise<SessionInterface[]> {
+  try {
+    return await Session.find({ user, date: { $gte: start, $lt: end } });
+  } catch (error: unknown) {
+    throw error;
+  }
+};
+
+export default { createSessionEntry, endOpenSession, sessionsInInterval };

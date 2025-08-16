@@ -1,54 +1,77 @@
-import logger from '../utils/logger';
+import { Events, type VoiceState } from 'discord.js';
+import { add } from 'date-fns';
+
+import type { Types } from 'mongoose';
+
+import buildEmbed from '../builders/endSessionEmbed';
+
 import serverService from '../services/serverService';
 import userService from '../services/userService';
-import { Events } from 'discord.js';
-import type { VoiceState } from 'discord.js';
 import studySessionService from '../services/studySessionService';
-import buildEmbed from '../builders/endSessionEmbed';
+import sessionService from '../services/sessionService';
+import retryAsync from '../utils/retryAsync';
+
+async function handleUserJoinedStudy(userId: Types.ObjectId) {
+  await studySessionService.startStudySession(userId);
+}
+
+async function handleUserLeftStudy(
+  userId: Types.ObjectId,
+  reportChannelId: string,
+  timezone: string,
+  member: VoiceState['member']
+) {
+  const closedSession = await studySessionService.endStudySession(userId);
+  const channel = await member?.guild.channels.fetch(reportChannelId);
+  if (!channel || !channel.isTextBased()) return;
+
+  const todaySessions = await sessionService.sessionsInInterval(
+    userId,
+    closedSession.date,
+    add(closedSession.date, { days: 1 })
+  );
+
+  retryAsync(channel.send.bind(channel), 5, 1000, {
+    embeds: [
+      buildEmbed(
+        closedSession,
+        timezone,
+        member?.user!,
+        todaySessions.reduce((acc, cur) => acc + cur.duration, 0)
+      ),
+    ],
+  });
+}
 
 const voiceStateHandler = {
   name: Events.VoiceStateUpdate,
   execute: async (oldState: VoiceState, newState: VoiceState) => {
     if (oldState.channelId === newState.channelId) return;
-    let server;
-    try {
-      server = await serverService.findServer(newState.guild.id);
-    } catch (error: unknown) {
-      if (error instanceof Error && error.message === 'server not found')
-        server = await serverService.createServer(newState.guild.id);
-      logger.error(error);
-    }
+
+    const server = await serverService.findOrCreateServer(newState.guild.id);
     if (!server) return;
 
     const member = newState.member?.user;
-    const wasStudying = server.studyChannels.includes(
-      oldState.channelId || 'NO_CHANNELID'
-    );
-    const nowStudying = server.studyChannels.includes(
-      newState.channelId || 'NO_CHANNELID'
-    );
+    const wasStudying = server.studyChannels.includes(oldState.channelId || '');
+    const nowStudying = server.studyChannels.includes(newState.channelId || '');
+
+    // early return se o usuário não é relevante
     if ((!wasStudying && !nowStudying) || !member || member.bot) return;
 
-    let user;
-    try {
-      user = await userService.findUser(member.id);
-    } catch (error: unknown) {
-      if (error instanceof Error && error.message === 'user not found')
-        user = await userService.createUser(member.id);
-      logger.error(error);
-    }
+    const user = await userService.findOrCreateUser(member.id);
     if (!user) return;
 
-    if (!wasStudying && nowStudying)
-      studySessionService.startStudySession(user._id);
+    if (!wasStudying && nowStudying) {
+      await handleUserJoinedStudy(user._id);
+    }
 
     if (wasStudying && !nowStudying) {
-      const closedSession = await studySessionService.endStudySession(user._id);
-      const channel = await newState.guild.channels.fetch(server.reportChannel);
-      if (!channel || !channel.isTextBased()) return;
-      channel.send({
-        embeds: [buildEmbed(closedSession, server.timezone, member)],
-      });
+      await handleUserLeftStudy(
+        user._id,
+        server.reportChannel,
+        server.timezone,
+        newState.member
+      );
     }
   },
 };

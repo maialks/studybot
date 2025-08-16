@@ -1,4 +1,10 @@
-import type { Awaitable, Events } from 'discord.js';
+import type {
+  Awaitable,
+  Events,
+  CommandInteraction,
+  Client,
+  Collection,
+} from 'discord.js';
 import type { Document, Types } from 'mongoose';
 import { src } from './utils/constants';
 
@@ -47,3 +53,11 @@ export type DateFormat =
   | 'PPpp' // Exemplo: Aug 14, 2025 at 11:30:00 AM
   | 'P' // Exemplo: 08/14/2025
   | 'p'; // Exemplo: 11:30 AM
+
+export type WrappedCommand = (
+  interaction: CommandInteraction
+) => Promise<unknown>;
+
+export interface BotClient extends Client {
+  commands?: Collection<string, WrappedCommand>;
+}

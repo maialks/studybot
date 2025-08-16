@@ -60,7 +60,20 @@ const findUser = async (discordId: string): Promise<UserInterface> => {
   }
 };
 
+async function findOrCreateUser(userId: string) {
+  try {
+    return await findUser(userId);
+  } catch (error: unknown) {
+    if (error instanceof Error && error.message === 'user not found') {
+      return await createUser(userId);
+    }
+    logger.error(error);
+    return null;
+  }
+}
+
 export default {
+  findOrCreateUser,
   createUser,
   deleteUser,
   delServer,

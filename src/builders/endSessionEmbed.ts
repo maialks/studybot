@@ -9,7 +9,8 @@ import type { User as Member } from 'discord.js';
 const buildEmbed = function (
   session: Session,
   timezone: string,
-  member: Member
+  member: Member,
+  total: number
 ): EmbedBuilder {
   const formattedData = {
     start: formatToTimezone(session.start, timezone, 'HH:mm'),
@@ -20,6 +21,8 @@ const buildEmbed = function (
     name: member.username,
     icon: member.displayAvatarURL(),
     id: member.id,
+    totalH: Math.floor(total / 3600),
+    totalM: Math.floor((total % 3600) / 60),
   };
 
   console.log(formattedData);
@@ -53,9 +56,9 @@ const buildEmbed = function (
               'MMM dd'
             )} (início da sessão):`
       } ${
-        formattedData.hours
-          ? `${formattedData.hours}h e ${formattedData.minutes}min`
-          : `${formattedData.minutes}min`
+        formattedData.totalH
+          ? `${formattedData.totalH}h e ${formattedData.totalM}min`
+          : `${formattedData.totalM}min`
       }`,
       iconURL: 'https://i.imgur.com/bwkB5DN.png',
     });

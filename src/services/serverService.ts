@@ -33,8 +33,21 @@ const findServer = async function (serverId: string): Promise<ServerInterface> {
   }
 };
 
+async function findOrCreateServer(guildId: string) {
+  try {
+    return await findServer(guildId);
+  } catch (error: unknown) {
+    if (error instanceof Error && error.message === 'server not found') {
+      return await createServer(guildId);
+    }
+    logger.error(error);
+    return null;
+  }
+}
+
 export default {
   createServer,
   deleteServer,
   findServer,
+  findOrCreateServer,
 };
