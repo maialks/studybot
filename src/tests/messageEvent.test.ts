@@ -3,7 +3,6 @@ import { expect, test, vi } from 'vitest';
 import type { Message } from 'discord.js';
 
 test('replies with chama', async () => {
-  console.log(messageHandler.execute);
   const fakeReply = vi.fn();
   const fakeMessage = {
     createdTimestamp: 1755021127,

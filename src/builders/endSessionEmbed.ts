@@ -25,8 +25,6 @@ const buildEmbed = function (
     totalM: Math.floor((total % 3600) / 60),
   };
 
-  console.log(formattedData);
-
   const embed = new EmbedBuilder()
     .setAuthor({
       name: `${formattedData.name} ${formattedData.flag}`,

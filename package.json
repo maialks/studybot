@@ -6,7 +6,9 @@
     "createdb": "docker create --name studybot-test -p 27017:27017 mongo",
     "startdb": "docker start studybot-test",
     "stopdb": "docker stop studybot-test",
-    "dev": "tsx ./src/main.ts"
+    "dev": "tsx --trace-warnings ./src/main.ts",
+    "deploy_cmd_global": "tsx ./src/deployCommands.ts global",
+    "deploy_cmd_guild": "tsx ./src/deployCommands.ts guild"
   },
   "author": "",
   "license": "ISC",

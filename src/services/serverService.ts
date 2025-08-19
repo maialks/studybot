@@ -33,15 +33,49 @@ const findServer = async function (serverId: string): Promise<ServerInterface> {
   }
 };
 
-async function findOrCreateServer(guildId: string) {
+async function findOrCreateServer(serverId: string) {
   try {
-    return await findServer(guildId);
+    return await findServer(serverId);
   } catch (error: unknown) {
     if (error instanceof Error && error.message === 'server not found') {
-      return await createServer(guildId);
+      return await createServer(serverId);
     }
     logger.error(error);
     return null;
+  }
+}
+
+async function setReportChannel(serverId: string, reportChannel: string) {
+  try {
+    await Server.findOneAndUpdate({ serverId }, { reportChannel });
+  } catch (error: unknown) {
+    logger.error(error);
+    throw error;
+  }
+}
+
+async function fetchStudyChannels(serverId: string) {
+  try {
+    const response = await Server.findOne(
+      { serverId },
+      { studyChannels: 1, _id: 0 }
+    ).lean();
+    if (!response) return [];
+    return response.studyChannels;
+  } catch (error: unknown) {
+    throw error;
+  }
+}
+
+async function updateServer(
+  serverId: string,
+  update: Partial<ServerInterface>
+) {
+  try {
+    await Server.findOneAndUpdate({ serverId }, { ...update });
+  } catch (error: unknown) {
+    logger.error(error);
+    throw error;
   }
 }
 
@@ -50,4 +84,6 @@ export default {
   deleteServer,
   findServer,
   findOrCreateServer,
+  fetchStudyChannels,
+  updateServer,
 };

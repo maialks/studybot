@@ -4,6 +4,7 @@ import type {
   CommandInteraction,
   Client,
   Collection,
+  SlashCommandBuilder,
 } from 'discord.js';
 import type { Document, Types } from 'mongoose';
 import { src } from './utils/constants';
@@ -42,6 +43,12 @@ export interface Server extends Document {
   timezone: string;
 }
 
+export interface WeakServer {
+  studyChannels?: string[];
+  reportChannel?: string;
+  timezone?: string;
+}
+
 export type DateFormat =
   | 'yyyy-MM-dd HH:mm:ss' // Exemplo: 2025-08-14 11:30:00
   | 'dd-MM HH:mm:ss' // 14-07 11:30:00
@@ -60,4 +67,12 @@ export type WrappedCommand = (
 
 export interface BotClient extends Client {
   commands?: Collection<string, WrappedCommand>;
+}
+
+export interface AnyCommand {
+  data: SlashCommandBuilder;
+  execute: (
+    interaction: CommandInteraction,
+    client: Client
+  ) => unknown | Promise<unknown>;
 }

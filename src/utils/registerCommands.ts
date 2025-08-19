@@ -4,15 +4,7 @@ import type { Client, Collection } from 'discord.js';
 import { fileURLToPath, pathToFileURL } from 'url';
 import logger from './logger';
 import { SlashCommandBuilder, CommandInteraction } from 'discord.js';
-import { WrappedCommand } from '../types';
-
-type AnyCommand = {
-  data: SlashCommandBuilder;
-  execute: (
-    interaction: CommandInteraction,
-    client: Client
-  ) => unknown | Promise<unknown>;
-};
+import type { WrappedCommand, AnyCommand } from '../types';
 
 interface BotClient extends Client {
   commands: Collection<string, WrappedCommand>;
@@ -58,12 +50,16 @@ async function loadDir(client: BotClient | Client, dir: string) {
         Promise.resolve(command.execute(interaction, client)).catch((e) =>
           logger.error(`Error in event ${command.data.name}:`, e)
         );
+
     if (mod.default) {
       const command = mod.default as AnyCommand;
       if (isValidCommand(command)) {
         const handler = wrapCommand(command);
         // @ts-ignore
-        client.commands.set(command.data.name, handler);
+        client.commands.set(command.data.name, {
+          data: command.data,
+          execute: handler,
+        });
         logger.info(`Command loaded (default): ${command.data.name}`);
       }
     }
@@ -74,7 +70,10 @@ async function loadDir(client: BotClient | Client, dir: string) {
       if (isValidCommand(command)) {
         const handler = wrapCommand(command);
         // @ts-ignore
-        client.commands.set(command.data.name, handler);
+        client.commands.set(command.data.name, {
+          data: command.data,
+          execute: handler,
+        });
         logger.info(`Command loaded (named): ${command.data.name}`);
       }
     }

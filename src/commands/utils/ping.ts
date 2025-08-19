@@ -1,3 +1,4 @@
+// src/commands/utility/ping.ts
 import { SlashCommandBuilder, type CommandInteraction } from 'discord.js';
 
 export default {
