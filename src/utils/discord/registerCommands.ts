@@ -11,11 +11,7 @@ interface BotClient extends Client {
 }
 
 async function importModule(filePath: string) {
-  try {
-    return await import(pathToFileURL(filePath).href);
-  } catch (error) {
-    throw error;
-  }
+  return await import(pathToFileURL(filePath).href);
 }
 
 async function loadDir(client: BotClient | Client, dir: string) {
@@ -55,7 +51,7 @@ async function loadDir(client: BotClient | Client, dir: string) {
       const command = mod.default as AnyCommand;
       if (isValidCommand(command)) {
         const handler = wrapCommand(command);
-        // @ts-ignore
+        // @ts-expect-errordiscord client does not have commands collection by default anymore
         client.commands.set(command.data.name, {
           data: command.data,
           execute: handler,
@@ -69,7 +65,7 @@ async function loadDir(client: BotClient | Client, dir: string) {
       const command = mod[key];
       if (isValidCommand(command)) {
         const handler = wrapCommand(command);
-        // @ts-ignore
+        // @ts-expect-error discord client does not have commands collection by default anymore
         client.commands.set(command.data.name, {
           data: command.data,
           execute: handler,
@@ -81,7 +77,7 @@ async function loadDir(client: BotClient | Client, dir: string) {
 }
 
 export async function registerCommands(client: Client): Promise<void> {
-  // @ts-ignore
+  // @ts-expect-error false warning due to compilation issues
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
   const commandsPath = path.join(__dirname, '..', 'commands');

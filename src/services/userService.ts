@@ -1,63 +1,31 @@
 import User from '../models/userModel';
 import { User as UserInterface } from '../types';
-import logger from '../utils/logger';
+import logger from '../utils/general/logger';
 
 const createUser = async function (discordId: string): Promise<UserInterface> {
-  try {
-    const user = await User.create({ discordId });
-    logger.info(`user ${user.discordId} saved sucessfully`);
-    return user;
-  } catch (error: unknown) {
-    throw error;
-  }
+  const user = await User.create({ discordId });
+  logger.info(`user ${user.discordId} saved sucessfully`);
+  return user;
 };
 
 const deleteUser = async function (discordId: string): Promise<void> {
-  try {
-    const user = await User.findOneAndDelete({ discordId });
-    if (!user) return;
-    logger.info(`user ${user.discordId} deleted sucessfully`);
-  } catch (error: unknown) {
-    throw error;
-  }
+  const user = await User.findOneAndDelete({ discordId });
+  if (!user) return;
+  logger.info(`user ${user.discordId} deleted sucessfully`);
 };
 
-const addServer = async function (
-  discordId: string,
-  serverId: string
-): Promise<void> {
-  try {
-    await User.findOneAndUpdate(
-      { discordId },
-      { $push: { servers: serverId } }
-    );
-  } catch (error: unknown) {
-    throw error;
-  }
+const addServer = async function (discordId: string, serverId: string): Promise<void> {
+  await User.findOneAndUpdate({ discordId }, { $push: { servers: serverId } });
 };
 
-const delServer = async function (
-  discordId: string,
-  serverId: string
-): Promise<void> {
-  try {
-    await User.findOneAndUpdate(
-      { discordId },
-      { $pull: { servers: serverId } }
-    );
-  } catch (error: unknown) {
-    throw error;
-  }
+const delServer = async function (discordId: string, serverId: string): Promise<void> {
+  await User.findOneAndUpdate({ discordId }, { $pull: { servers: serverId } });
 };
 
 const findUser = async (discordId: string): Promise<UserInterface> => {
-  try {
-    const user = await User.findOne({ discordId });
-    if (!user) throw new Error('user not found');
-    return user;
-  } catch (error: unknown) {
-    throw error;
-  }
+  const user = await User.findOne({ discordId });
+  if (!user) throw new Error('user not found');
+  return user;
 };
 
 async function findOrCreateUser(userId: string) {

@@ -1,7 +1,7 @@
 import type { Types } from 'mongoose';
-import { getStartOfDay } from '../utils/date';
+import { getStartOfDay } from '../utils/general/date';
 import sessionService from './sessionService';
-import retryAsync from '../utils/retryAsync';
+import retryAsync from '../utils/general/retryAsync';
 import { Session } from '../types';
 
 async function startStudySession(userId: Types.ObjectId): Promise<void> {

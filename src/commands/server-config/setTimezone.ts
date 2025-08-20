@@ -27,7 +27,8 @@ export default {
       });
     }
     try {
-      await serverService.updateServer(interaction.guildId!, {
+      if (!interaction.guildId) return;
+      await serverService.updateServer(interaction.guildId, {
         timezone: selectedTimezone.value,
       });
       interaction.reply(

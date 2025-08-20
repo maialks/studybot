@@ -9,7 +9,7 @@ import serverService from '../services/serverService';
 import userService from '../services/userService';
 import studySessionService from '../services/studySessionService';
 import sessionService from '../services/sessionService';
-import retryAsync from '../utils/retryAsync';
+import retryAsync from '../utils/general/retryAsync';
 
 async function handleUserJoinedStudy(userId: Types.ObjectId) {
   await studySessionService.startStudySession(userId);
@@ -23,7 +23,7 @@ async function handleUserLeftStudy(
 ) {
   const closedSession = await studySessionService.endStudySession(userId);
   const channel = await member?.guild.channels.fetch(reportChannelId);
-  if (!channel || !channel.isTextBased()) return;
+  if (!channel || !channel.isTextBased() || !member?.user) return;
 
   const todaySessions = await sessionService.sessionsInInterval(
     userId,
@@ -36,7 +36,7 @@ async function handleUserLeftStudy(
       buildEmbed(
         closedSession,
         timezone,
-        member?.user!,
+        member?.user,
         todaySessions.reduce((acc, cur) => acc + cur.duration, 0)
       ),
     ],
@@ -66,12 +66,7 @@ const voiceStateHandler = {
     }
 
     if (wasStudying && !nowStudying) {
-      await handleUserLeftStudy(
-        user._id,
-        server.reportChannel,
-        server.timezone,
-        newState.member
-      );
+      await handleUserLeftStudy(user._id, server.reportChannel, server.timezone, newState.member);
     }
   },
 };

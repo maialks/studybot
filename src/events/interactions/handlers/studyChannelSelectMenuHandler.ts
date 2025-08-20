@@ -1,16 +1,15 @@
 import { type StringSelectMenuInteraction } from 'discord.js';
-import serverService from '../../services/serverService';
-import logger from '../../utils/logger';
+import serverService from '../../../services/serverService';
+import logger from '../../../utils/general/logger';
 
 export default async function (interaction: StringSelectMenuInteraction) {
   try {
-    await serverService.updateServer(interaction.guildId!, {
+    if (!interaction.guildId) return;
+    await serverService.updateServer(interaction.guildId, {
       studyChannels: interaction.values,
     });
     await interaction.reply(
-      `Currently Tracked Channels:\n${interaction.values
-        .map((ch) => `• <#${ch}>`)
-        .join('\n')}`
+      `Currently Tracked Channels:\n${interaction.values.map((ch) => `• <#${ch}>`).join('\n')}`
     );
     interaction.message.delete();
   } catch (error: unknown) {

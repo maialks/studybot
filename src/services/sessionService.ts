@@ -3,11 +3,7 @@ import type { NewSession, Session as SessionInterface } from '../types';
 import type { Types } from 'mongoose';
 
 const createSessionEntry = async function (params: NewSession): Promise<void> {
-  try {
-    await Session.create(params);
-  } catch (error: unknown) {
-    throw error;
-  }
+  await Session.create(params);
 };
 
 const endOpenSession = async function (
@@ -45,11 +41,7 @@ const sessionsInInterval = async function (
   start: Date,
   end: Date
 ): Promise<SessionInterface[]> {
-  try {
-    return await Session.find({ user, date: { $gte: start, $lt: end } });
-  } catch (error: unknown) {
-    throw error;
-  }
+  return await Session.find({ user, date: { $gte: start, $lt: end } });
 };
 
 export default { createSessionEntry, endOpenSession, sessionsInInterval };

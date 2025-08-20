@@ -1,7 +1,7 @@
 import serverService from '../services/serverService';
-import { expect, test, vi, describe, it, beforeAll, afterAll } from 'vitest';
+import { expect, describe, it, beforeAll } from 'vitest';
 import env from '../config/env';
-import { connectMongo } from '../utils/mongo';
+import { connectMongo } from '../utils/db/mongo';
 import Server from '../models/serverModel';
 
 describe('database create/delete', () => {

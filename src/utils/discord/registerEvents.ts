@@ -11,11 +11,7 @@ type AnyEvent = {
 };
 
 async function importModule(filePath: string) {
-  try {
-    return await import(pathToFileURL(filePath).href);
-  } catch (error) {
-    throw error;
-  }
+  return await import(pathToFileURL(filePath).href);
 }
 
 async function loadDir(client: Client, dir: string) {
@@ -74,7 +70,7 @@ async function loadDir(client: Client, dir: string) {
 }
 
 export async function registerEvents(client: Client): Promise<void> {
-  // @ts-ignore
+  // @ts-expect-error false warning due to compilation issues
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
   const eventsPath = path.join(__dirname, '..', 'events');

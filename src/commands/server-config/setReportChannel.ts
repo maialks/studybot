@@ -1,10 +1,6 @@
-import {
-  ChannelType,
-  ChatInputCommandInteraction,
-  SlashCommandBuilder,
-} from 'discord.js';
+import { ChannelType, ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
 import serverService from '../../services/serverService';
-import logger from '../../utils/logger';
+import logger from '../../utils/general/logger';
 
 export default {
   data: new SlashCommandBuilder()
@@ -20,14 +16,12 @@ export default {
 
   async execute(interaction: ChatInputCommandInteraction) {
     const channel = interaction.options.getChannel('channel');
-    if (!interaction?.guild || !channel?.id) return;
+    if (!interaction?.guild || !channel?.id || !interaction.guildId) return;
     try {
-      serverService.updateServer(interaction.guildId!, {
+      serverService.updateServer(interaction.guildId, {
         reportChannel: channel.id,
       });
-      await interaction.reply(
-        `canal de report configurado para: <#${channel.id}>`
-      );
+      await interaction.reply(`canal de report configurado para: <#${channel.id}>`);
     } catch (error: unknown) {
       console.log('erro em commands/serverconfig');
       logger.error(error);

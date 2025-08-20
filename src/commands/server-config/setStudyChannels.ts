@@ -23,7 +23,8 @@ export default {
     );
 
     // Pega todos os canais de voz do servidor
-    const guild = interaction.guild!;
+    const guild = interaction.guild;
+    if (!guild) return;
     const voiceChannels = guild.channels.cache.filter(
       (ch) => ch.type === 2 // ChannelType.GuildVoice (2)
     );

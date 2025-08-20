@@ -1,4 +1,4 @@
-import { startOfDay, format, isToday } from 'date-fns';
+import { startOfDay, format } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
 import type { DateFormat } from '../types';
 

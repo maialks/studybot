@@ -1,12 +1,9 @@
-import serverService from '../services/serverService';
-import { ConfigState } from '../types';
+import serverService from '../../services/serverService';
+import { ConfigState } from '../../types';
 
 const configSessions: Map<string, ConfigState> = new Map();
 
-export async function startSession(
-  serverId: string,
-  userId: string
-): Promise<void> {
+export async function startSession(serverId: string, userId: string): Promise<void> {
   const { timezone } = await serverService.findServer(serverId);
   configSessions.set(`${serverId}:${userId}`, {
     data: { reportChannel: '', studyChannels: [], timezone },
@@ -20,14 +17,12 @@ function updateSession(
   payload: Partial<ConfigState['data']>
 ): ConfigState {
   const session = configSessions.get(`${serverId}:${userId}`);
-  if (!session)
-    throw new Error('config session closed/not found, try again later');
+  if (!session) throw new Error('config session closed/not found, try again later');
   const newSession = {
     data: { ...session.data, ...payload },
     completed: !!(
       (session.data.reportChannel || payload.reportChannel) &&
-      (session.data.studyChannels.length ||
-        (payload.studyChannels && payload.studyChannels.length))
+      (session.data.studyChannels.length || (payload.studyChannels && payload.studyChannels.length))
     ),
   };
   configSessions.set(`${serverId}:${userId}`, newSession);
@@ -41,8 +36,7 @@ export function deleteSession(serverId: string, userId: string): void {
 
 function findSession(serverId: string, userId: string): ConfigState {
   const session = configSessions.get(`${serverId}:${userId}`);
-  if (!session)
-    throw new Error('config session closed/not found, try again later');
+  if (!session) throw new Error('config session closed/not found, try again later');
   return session;
 }
 

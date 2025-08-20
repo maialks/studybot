@@ -1,4 +1,4 @@
-import { formatToTimezone } from '../utils/date';
+import { formatToTimezone } from '../utils/general/date';
 import { EmbedBuilder } from 'discord.js';
 import { flagMap } from '../config/timezones';
 import { isToday } from 'date-fns';

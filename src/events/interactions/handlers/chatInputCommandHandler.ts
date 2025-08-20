@@ -3,7 +3,7 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 export default async function chatInputCommandHandler(
   interaction: ChatInputCommandInteraction
 ) {
-  // @ts-ignore
+  // @ts-expect-error discord client does not have commands collection by default anymore
   const command = interaction.client.commands.get(interaction.commandName);
   if (!command) return;
   try {

@@ -3,15 +3,11 @@ import env from './config/env';
 import { fileURLToPath, pathToFileURL } from 'url';
 import fs from 'fs';
 import path from 'path';
-import logger from './utils/logger';
+import logger from './utils/general/logger';
 import type { AnyCommand } from './types';
 
 async function importModule(filePath: string) {
-  try {
-    return await import(pathToFileURL(filePath).href);
-  } catch (error) {
-    throw error;
-  }
+  return await import(pathToFileURL(filePath).href);
 }
 
 async function loadDir(dir: string): Promise<AnyCommand[]> {
@@ -19,8 +15,7 @@ async function loadDir(dir: string): Promise<AnyCommand[]> {
   const entries = fs.readdirSync(dir, { withFileTypes: true });
 
   const isValidCommand = (possibleCommand: AnyCommand): boolean =>
-    !!possibleCommand.data.name &&
-    typeof possibleCommand.execute === 'function';
+    !!possibleCommand.data.name && typeof possibleCommand.execute === 'function';
 
   for (const entry of entries) {
     const filePath = path.join(dir, entry.name);
@@ -44,9 +39,7 @@ async function loadDir(dir: string): Promise<AnyCommand[]> {
       const command = mod.default as AnyCommand;
       if (isValidCommand(command)) {
         commands.push(command);
-        logger.info(
-          `Command addead to commands array (default): ${command.data.name}`
-        );
+        logger.info(`Command addead to commands array (default): ${command.data.name}`);
       }
     }
 
@@ -55,9 +48,7 @@ async function loadDir(dir: string): Promise<AnyCommand[]> {
       const command = mod[key];
       if (isValidCommand(command)) {
         commands.push(command);
-        logger.info(
-          `Command addead to commands array (named): ${command.data.name}`
-        );
+        logger.info(`Command addead to commands array (named): ${command.data.name}`);
       }
     }
   }
@@ -68,30 +59,23 @@ async function loadDir(dir: string): Promise<AnyCommand[]> {
 const rest = new REST().setToken(env.BOT_TOKEN);
 
 async function deployCommands(): Promise<void> {
-  // @ts-ignore
+  // @ts-expect-error false warning due to compilation issues
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
   const commandsPath = path.join(__dirname, 'commands');
   const scope: 'global' | 'guild' = process.argv[2] as 'global' | 'guild';
   const commands = await loadDir(commandsPath);
-  try {
-    let data: APIApplicationCommand[];
-    if (scope === 'global') {
-      data = (await rest.put(Routes.applicationCommands(env.APP_ID), {
-        body: commands.map((command) => command.data.toJSON()),
-      })) as APIApplicationCommand[];
-    } else {
-      data = (await rest.put(
-        Routes.applicationGuildCommands(env.APP_ID, env.TEST_GUILD),
-        { body: commands.map((command) => command.data.toJSON()) }
-      )) as APIApplicationCommand[];
-    }
-    logger.info(
-      `Successfully reloaded ${data?.length} application ${scope} slash commands.`
-    );
-  } catch (error) {
-    logger.error(error);
+  let data: APIApplicationCommand[];
+  if (scope === 'global') {
+    data = (await rest.put(Routes.applicationCommands(env.APP_ID), {
+      body: commands.map((command) => command.data.toJSON()),
+    })) as APIApplicationCommand[];
+  } else {
+    data = (await rest.put(Routes.applicationGuildCommands(env.APP_ID, env.TEST_GUILD), {
+      body: commands.map((command) => command.data.toJSON()),
+    })) as APIApplicationCommand[];
   }
+  logger.info(`Successfully reloaded ${data?.length} application ${scope} slash commands.`);
 }
 
 deployCommands();
