@@ -1,26 +1,37 @@
 {
   "name": "studybot",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "main.ts",
   "scripts": {
     "createdb": "docker create --name studybot-test -p 27017:27017 mongo",
-    "dev": "docker start studybot-test && sleep 2 && NODE_ENV=development nodemon ./src/index.js",
-    "prod": "NODE_ENV=production node ./src/index.js"
+    "startdb": "docker start studybot-test",
+    "stopdb": "docker stop studybot-test",
+    "dev": "tsx --trace-warnings ./src/main.ts",
+    "deploy_cmd_global": "tsx ./src/deployCommands.ts global",
+    "deploy_cmd_guild": "tsx ./src/deployCommands.ts guild"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "axios": "^1.8.3",
-    "discord-interactions": "^4.1.1",
-    "discord.js": "^14.18.0",
-    "dotenv": "^16.4.7",
-    "express": "^4.21.2",
-    "express-async-errors": "^3.1.1",
-    "mongoose": "^8.13.2",
-    "morgan": "^1.10.0"
+    "@types/express": "^5.0.3",
+    "axios": "^1.7.7",
+    "date-fns": "^4.1.0",
+    "date-fns-tz": "^3.2.0",
+    "discord-interactions": "^4.3.0",
+    "discord.js": "^14.21.0",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "mongoose": "^8.7.3"
   },
   "devDependencies": {
-    "nodemon": "^3.1.9"
+    "@eslint/js": "^9.33.0",
+    "@types/node": "^22.7.5",
+    "eslint": "^9.33.0",
+    "eslint-plugin-node": "^11.1.0",
+    "tsx": "^4.20.4",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.40.0",
+    "vitest": "^3.2.4"
   }
 }
