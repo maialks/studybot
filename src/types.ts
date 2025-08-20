@@ -76,3 +76,12 @@ export interface AnyCommand {
     client: Client
   ) => unknown | Promise<unknown>;
 }
+
+export interface ConfigState {
+  data: {
+    reportChannel: string;
+    studyChannels: string[];
+    timezone?: string;
+  };
+  completed: boolean;
+}
