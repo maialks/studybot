@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import type { Client } from 'discord.js';
 import { fileURLToPath, pathToFileURL } from 'url';
-import logger from './logger';
+import logger from '../general/logger';
 
 type AnyEvent = {
   name: string;
@@ -73,7 +73,7 @@ export async function registerEvents(client: Client): Promise<void> {
   // @ts-expect-error false warning due to compilation issues
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
-  const eventsPath = path.join(__dirname, '..', 'events');
+  const eventsPath = path.join(__dirname, '..', '..', 'events');
 
   if (!fs.existsSync(eventsPath)) {
     logger.warn('vents folder not found, skipping event registration.');

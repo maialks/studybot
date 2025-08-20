@@ -21,9 +21,8 @@ export default {
       serverService.updateServer(interaction.guildId, {
         reportChannel: channel.id,
       });
-      await interaction.reply(`canal de report configurado para: <#${channel.id}>`);
+      await interaction.reply(`Report Channel set to: <#${channel.id}>`);
     } catch (error: unknown) {
-      console.log('erro em commands/serverconfig');
       logger.error(error);
     }
   },

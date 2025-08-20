@@ -2,9 +2,9 @@ import fs from 'fs';
 import path from 'path';
 import type { Client, Collection } from 'discord.js';
 import { fileURLToPath, pathToFileURL } from 'url';
-import logger from './logger';
+import logger from '../general/logger';
 import { SlashCommandBuilder, CommandInteraction } from 'discord.js';
-import type { WrappedCommand, AnyCommand } from '../types';
+import type { WrappedCommand, AnyCommand } from '../../types';
 
 interface BotClient extends Client {
   commands: Collection<string, WrappedCommand>;
@@ -80,7 +80,7 @@ export async function registerCommands(client: Client): Promise<void> {
   // @ts-expect-error false warning due to compilation issues
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
-  const commandsPath = path.join(__dirname, '..', 'commands');
+  const commandsPath = path.join(__dirname, '..', '..', 'commands');
 
   if (!fs.existsSync(commandsPath)) {
     logger.warn('vents folder not found, skipping event registration.');

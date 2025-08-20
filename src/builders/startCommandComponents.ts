@@ -36,9 +36,7 @@ export function buildSessionStartMessage({
         )
       )
       .setThumbnailAccessory((thumbnail) =>
-        thumbnail
-          .setDescription('bot icon')
-          .setURL('https://i.imgur.com/ls2IPmi.png')
+        thumbnail.setDescription('bot icon').setURL('https://i.imgur.com/ls2IPmi.png')
       ),
 
     // Container para Study Channels e Report Channel
@@ -46,9 +44,7 @@ export function buildSessionStartMessage({
       .setAccentColor(0x000000)
 
       // Study Channels
-      .addTextDisplayComponents(
-        new TextDisplayBuilder().setContent('### Study Channels')
-      )
+      .addTextDisplayComponents(new TextDisplayBuilder().setContent('### Study Channels'))
       .addActionRowComponents(
         new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
           new StringSelectMenuBuilder()
@@ -73,9 +69,7 @@ export function buildSessionStartMessage({
       )
 
       // Report Channel
-      .addTextDisplayComponents(
-        new TextDisplayBuilder().setContent('### Report Channel')
-      )
+      .addTextDisplayComponents(new TextDisplayBuilder().setContent('### Report Channel'))
       .addActionRowComponents(
         new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
           new StringSelectMenuBuilder()
@@ -83,9 +77,7 @@ export function buildSessionStartMessage({
             .setPlaceholder('No Report Channel Selected')
             .addOptions([
               ...notDefaultTextChannels.map((ch) =>
-                new StringSelectMenuOptionBuilder()
-                  .setValue(ch.id)
-                  .setLabel(ch.name)
+                new StringSelectMenuOptionBuilder().setValue(ch.id).setLabel(ch.name)
               ),
               ...(defaultTextChannel
                 ? [
@@ -107,18 +99,13 @@ export function buildSessionStartMessage({
       // Botão Save
       .addActionRowComponents(
         new ActionRowBuilder<ButtonBuilder>().addComponents(
-          new ButtonBuilder()
-            .setStyle(ButtonStyle.Success)
-            .setLabel('Save')
-            .setCustomId('SAVE-BTN')
+          new ButtonBuilder().setStyle(ButtonStyle.Success).setLabel('Save').setCustomId('SAVE-BTN')
         )
       ),
   ];
 }
 
-export function buildSessionClosingMessage(
-  data: ConfigState['data']
-): SectionBuilder[] {
+export function buildSessionClosingMessage(data: ConfigState['data']): SectionBuilder[] {
   return [
     new SectionBuilder()
       .addTextDisplayComponents(
@@ -129,13 +116,11 @@ export function buildSessionClosingMessage(
               ' '
             )}\nYou can always run this command again if you need to update your settings. \nYour current timezone is **${
             timezones.find((tz) => tz.value === data.timezone)?.name
-          }**. If you need to change it, please use _/set-timezone_ command.`
+          }**.\nIf you need to change it, please use _/set-timezone_ command.`
         )
       )
       .setThumbnailAccessory((thumbnail) =>
-        thumbnail
-          .setDescription('bot icon')
-          .setURL('https://i.imgur.com/ls2IPmi.png')
+        thumbnail.setDescription('bot icon').setURL('https://i.imgur.com/ls2IPmi.png')
       ),
   ];
 }

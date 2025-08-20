@@ -13,20 +13,30 @@ export default {
       interaction.guildId &&
       interaction.customId === 'STUDY-CH-SELECT' &&
       interaction.message.interaction?.commandName === 'set-study-channels'
-    )
+    ) {
       await studyChannelSelectMenu(interaction);
+      return;
+    }
 
     if (
       (interaction.isStringSelectMenu() || interaction.isButton()) &&
       interaction.guildId &&
       interaction.message?.interaction?.commandName === 'start'
-    )
+    ) {
       await startSelectHandler(interaction, client);
+      return;
+    }
 
     // console.log(interaction.isChatInputCommand());
-    if (interaction.isChatInputCommand()) await chatInputCommandHandler(interaction);
+    if (interaction.isChatInputCommand()) {
+      await chatInputCommandHandler(interaction);
+      return;
+    }
 
     // console.log(interaction.isAutocomplete());
-    if (interaction.isAutocomplete()) await chatInputAutoCompleteHandler(interaction);
+    if (interaction.isAutocomplete()) {
+      await chatInputAutoCompleteHandler(interaction);
+      return;
+    }
   },
 };
