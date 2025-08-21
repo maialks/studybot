@@ -41,6 +41,7 @@ export interface Server extends Document {
   studyChannels: string[];
   reportChannel: string;
   timezone: string;
+  minTime: number;
 }
 
 export interface WeakServer {
@@ -61,9 +62,7 @@ export type DateFormat =
   | 'P' // Exemplo: 08/14/2025
   | 'p'; // Exemplo: 11:30 AM
 
-export type WrappedCommand = (
-  interaction: CommandInteraction
-) => Promise<unknown>;
+export type WrappedCommand = (interaction: CommandInteraction) => Promise<unknown>;
 
 export interface BotClient extends Client {
   commands?: Collection<string, WrappedCommand>;
@@ -71,10 +70,7 @@ export interface BotClient extends Client {
 
 export interface AnyCommand {
   data: SlashCommandBuilder;
-  execute: (
-    interaction: CommandInteraction,
-    client: Client
-  ) => unknown | Promise<unknown>;
+  execute: (interaction: CommandInteraction, client: Client) => unknown | Promise<unknown>;
 }
 
 export interface ConfigState {

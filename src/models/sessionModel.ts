@@ -12,9 +12,6 @@ const sessionSchema = new mongoose.Schema<Session>({
 });
 
 sessionSchema.index({ user: 1, date: 1 });
-sessionSchema.index(
-  { user: 1 },
-  { partialFilterExpression: { end: null }, unique: true }
-);
+sessionSchema.index({ user: 1 }, { partialFilterExpression: { end: null }, unique: true });
 
 export default mongoose.model<Session>('Session', sessionSchema, 'sessions');

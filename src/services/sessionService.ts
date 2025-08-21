@@ -7,12 +7,13 @@ const createSessionEntry = async function (params: NewSession): Promise<void> {
 };
 
 const endOpenSession = async function (
-  user: Types.ObjectId
+  user: Types.ObjectId,
+  serverMin: number
 ): Promise<SessionInterface> {
   const now = new Date();
   try {
     const updatedSession = await Session.findOneAndUpdate(
-      { user, end: null }, // Filtro para encontrar a sessão aberta
+      { user: user.toString(), end: null }, // Filtro para encontrar a sessão aberta
       [
         {
           $set: {
@@ -26,13 +27,18 @@ const endOpenSession = async function (
       { new: true }
     );
     if (!updatedSession) throw new Error('No open session found for user');
+    if (updatedSession.duration < serverMin) {
+      await Session.findByIdAndDelete(updatedSession._id);
+      throw new Error(
+        JSON.stringify({
+          type: 'bellow min length',
+          duration: updatedSession.duration,
+        })
+      );
+    }
     return updatedSession;
   } catch (error: unknown) {
-    throw new Error(
-      `failed to end session: ${
-        error instanceof Error ? error.message : 'Unknown error'
-      }`
-    );
+    throw error;
   }
 };
 

@@ -14,8 +14,8 @@ async function startStudySession(userId: Types.ObjectId): Promise<void> {
   });
 }
 
-async function endStudySession(userId: Types.ObjectId): Promise<Session> {
-  return await retryAsync(sessionService.endOpenSession, 3, 2000, userId);
+async function endStudySession(userId: Types.ObjectId, serverMin: number): Promise<Session> {
+  return await sessionService.endOpenSession(userId, serverMin);
 }
 
 export default {
