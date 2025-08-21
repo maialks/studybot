@@ -10,6 +10,8 @@ import {
   ButtonBuilder,
   ButtonStyle,
   SectionBuilder,
+  SeparatorBuilder,
+  SeparatorSpacingSize,
 } from 'discord.js';
 import timezones from '../config/timezones';
 import { ConfigState } from '../types';
@@ -19,6 +21,7 @@ interface BuildSessionStartMessageProps {
   currentChannels: string[];
   notDefaultTextChannels: Collection<string, TextChannel>;
   defaultTextChannel: TextChannel | undefined;
+  selectedTime: number;
 }
 
 export function buildSessionStartMessage({
@@ -26,13 +29,14 @@ export function buildSessionStartMessage({
   currentChannels,
   notDefaultTextChannels,
   defaultTextChannel,
+  selectedTime,
 }: BuildSessionStartMessageProps): (SectionBuilder | ContainerBuilder)[] {
   return [
     // Bloco de introdução
     new SectionBuilder()
       .addTextDisplayComponents(
         new TextDisplayBuilder().setContent(
-          "## Welcome to Studybot \n\nI'm here to help Discord communities organize and monitor study sessions. \n\nBefore we start, you need to configure some things like:\n • Channel where the sessions will be reported\n • Which voice channels will be tracked\n • Your server timezone"
+          "## Welcome to Studybot \n\nI'm here to help Discord communities organize and monitor study sessions. \nBut before we start, you need to configure some things:"
         )
       )
       .setThumbnailAccessory((thumbnail) =>
@@ -68,6 +72,10 @@ export function buildSessionStartMessage({
         )
       )
 
+      .addSeparatorComponents(
+        new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(false)
+      )
+
       // Report Channel
       .addTextDisplayComponents(new TextDisplayBuilder().setContent('### Report Channel'))
       .addActionRowComponents(
@@ -96,10 +104,82 @@ export function buildSessionStartMessage({
         )
       )
 
+      .addSeparatorComponents(
+        new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(false)
+      )
+
+      // Min Time
+      .addTextDisplayComponents(
+        new TextDisplayBuilder().setContent('### Mininum Session Duration')
+      )
+      .addSeparatorComponents(
+        new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(false)
+      )
+      .addActionRowComponents(
+        new ActionRowBuilder<ButtonBuilder>().addComponents(
+          new ButtonBuilder()
+            .setStyle(
+              'TIME-BTN_3'.endsWith(`${selectedTime}`)
+                ? ButtonStyle.Primary
+                : ButtonStyle.Secondary
+            )
+            .setDisabled('TIME-BTN_3'.endsWith(`${selectedTime}`))
+            .setLabel('3min')
+            .setCustomId('TIME-BTN_3'),
+          new ButtonBuilder()
+            .setStyle(
+              'TIME-BTN_4'.endsWith(`${selectedTime}`)
+                ? ButtonStyle.Primary
+                : ButtonStyle.Secondary
+            )
+            .setDisabled('TIME-BTN_4'.endsWith(`${selectedTime}`))
+            .setLabel('4min')
+            .setCustomId('TIME-BTN_4'),
+          new ButtonBuilder()
+            .setStyle(
+              'TIME-BTN_5'.endsWith(`${selectedTime}`)
+                ? ButtonStyle.Primary
+                : ButtonStyle.Secondary
+            )
+            .setDisabled('TIME-BTN_5'.endsWith(`${selectedTime}`))
+            .setLabel('5min')
+            .setCustomId('TIME-BTN_5'),
+          new ButtonBuilder()
+            .setStyle(
+              'TIME-BTN_6'.endsWith(`${selectedTime}`)
+                ? ButtonStyle.Primary
+                : ButtonStyle.Secondary
+            )
+            .setDisabled('TIME-BTN_6'.endsWith(`${selectedTime}`))
+            .setLabel('6min')
+            .setCustomId('TIME-BTN_6'),
+          new ButtonBuilder()
+            .setStyle(
+              'TIME-BTN_7'.endsWith(`${selectedTime}`)
+                ? ButtonStyle.Primary
+                : ButtonStyle.Secondary
+            )
+            .setDisabled('TIME-BTN_7'.endsWith(`${selectedTime}`))
+            .setLabel('7min')
+            .setCustomId('TIME-BTN_7')
+        )
+      )
+      .addTextDisplayComponents(
+        new TextDisplayBuilder().setContent(
+          '_Sets the minimum time (in minutes) for a session to be valid and saved. Shorter sessions are ignored_\n '
+        )
+      )
+
+      .addSeparatorComponents(
+        new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(true)
+      )
       // Botão Save
       .addActionRowComponents(
         new ActionRowBuilder<ButtonBuilder>().addComponents(
-          new ButtonBuilder().setStyle(ButtonStyle.Success).setLabel('Save').setCustomId('SAVE-BTN')
+          new ButtonBuilder()
+            .setStyle(ButtonStyle.Success)
+            .setLabel('Save')
+            .setCustomId('SAVE-BTN')
         )
       ),
   ];
@@ -114,9 +194,9 @@ export function buildSessionClosingMessage(data: ConfigState['data']): SectionBu
             .map((ch) => `\n• <#${ch}>`)
             .join(
               ' '
-            )}\nYou can always run this command again if you need to update your settings. \nYour current timezone is **${
+            )}\n\nYou can always run this command again if you need to update your settings. \n**${
             timezones.find((tz) => tz.value === data.timezone)?.name
-          }**.\nIf you need to change it, please use _/set-timezone_ command.`
+          }** is your current timezone.\nIf you need to change it, please use _/set-timezone_ command.`
         )
       )
       .setThumbnailAccessory((thumbnail) =>

@@ -6,7 +6,7 @@ const configSessions: Map<string, ConfigState> = new Map();
 export async function startSession(serverId: string, userId: string): Promise<void> {
   const { timezone } = await serverService.findServer(serverId);
   configSessions.set(`${serverId}:${userId}`, {
-    data: { reportChannel: '', studyChannels: [], timezone },
+    data: { reportChannel: '', studyChannels: [], timezone, minTime: -1 },
     completed: false,
   });
 }
@@ -18,13 +18,18 @@ function updateSession(
 ): ConfigState {
   const session = configSessions.get(`${serverId}:${userId}`);
   if (!session) throw new Error('config session closed/not found, try again later');
+
+  const updatedData = { ...session.data, ...payload };
+
   const newSession = {
-    data: { ...session.data, ...payload },
-    completed: !!(
-      (session.data.reportChannel || payload.reportChannel) &&
-      (session.data.studyChannels.length || (payload.studyChannels && payload.studyChannels.length))
-    ),
+    data: updatedData,
+    completed:
+      !!updatedData.reportChannel &&
+      updatedData.studyChannels.length > 0 &&
+      updatedData.minTime >= 3 &&
+      updatedData.minTime <= 7,
   };
+
   configSessions.set(`${serverId}:${userId}`, newSession);
   return newSession;
 }

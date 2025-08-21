@@ -10,11 +10,12 @@ const serverSchema = new mongoose.Schema<Server>(
     minTime: {
       type: Number,
       min: 180,
-      max: 600,
+      max: 420,
       default: 300,
       validate: {
         validator: Number.isInteger,
-        message: '{VALUE} must be a integer number between 180 - 600 (calculated in secontds)',
+        message:
+          '{VALUE} must be a integer number between 180 - 420 (calculated in secontds)',
       },
     },
   },

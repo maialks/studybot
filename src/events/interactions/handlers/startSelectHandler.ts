@@ -1,12 +1,20 @@
-import { type StringSelectMenuInteraction, type Client, ButtonInteraction } from 'discord.js';
+import {
+  type StringSelectMenuInteraction,
+  type Client,
+  ButtonInteraction,
+} from 'discord.js';
 import serverService from '../../../services/serverService';
 import configSession from '../../../utils/discord/configSession';
 import type { ConfigState } from '../../../types';
 import deleteMessage from '../../../utils/discord/deleteMessage';
 import { buildSessionClosingMessage } from '../../../builders/startCommandComponents';
+import { minTime } from 'date-fns/constants';
 type Interaction = StringSelectMenuInteraction | ButtonInteraction;
 
-export default async function startSelectHandler(interaction: Interaction, client: Client) {
+export default async function startSelectHandler(
+  interaction: Interaction,
+  client: Client
+) {
   if (!interaction.guildId) return;
   const [guildId, userId] = [interaction.guildId, interaction.user.id];
 
@@ -28,9 +36,11 @@ export default async function startSelectHandler(interaction: Interaction, clien
       reportChannel: defaultReportChannel,
       studyChannels: defaultStudyChannels,
       timezone,
+      minTime,
     } = await serverService.findServer(guildId);
 
-    const { reportChannel: inputReportChannel, studyChannels: inputStudyChannels } = session.data;
+    const { reportChannel: inputReportChannel, studyChannels: inputStudyChannels } =
+      session.data;
     const changed =
       defaultReportChannel === inputReportChannel &&
       defaultStudyChannels.length === inputStudyChannels.length &&
@@ -43,8 +53,11 @@ export default async function startSelectHandler(interaction: Interaction, clien
       closeSession(
         {
           reportChannel: inputReportChannel || defaultReportChannel,
-          studyChannels: inputStudyChannels.length ? inputStudyChannels : defaultStudyChannels,
+          studyChannels: inputStudyChannels.length
+            ? inputStudyChannels
+            : defaultStudyChannels,
           timezone,
+          minTime: session.data.minTime !== -1 ? session.data.minTime : minTime,
         },
         changed
       );
@@ -108,5 +121,15 @@ export default async function startSelectHandler(interaction: Interaction, clien
       }
     }
     return;
+  }
+
+  if (interaction.customId.startsWith('TIME-BTN') && interaction.isButton()) {
+    const value = Number(interaction.customId.slice(-1));
+    if (isNaN(value)) return;
+    const session = configSession.updateSession(guildId, userId, {
+      minTime: value,
+    });
+    await interaction.deferUpdate();
+    console.log(session);
   }
 }

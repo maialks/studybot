@@ -1,4 +1,8 @@
-import { SlashCommandBuilder, type ChatInputCommandInteraction, type Client } from 'discord.js';
+import {
+  SlashCommandBuilder,
+  type ChatInputCommandInteraction,
+  type Client,
+} from 'discord.js';
 import serverService from '../../services/serverService';
 import { startSession, deleteSession } from '../../utils/discord/configSession';
 import deleteMessage from '../../utils/discord/deleteMessage';
@@ -14,7 +18,9 @@ export default {
     const serverData = await serverService.findServer(interaction.guildId);
 
     const textChannels = interaction.guild.channels.cache.filter((ch) => ch.type === 0);
-    const notDefaultTextChannels = textChannels.filter((ch) => ch.id !== serverData.reportChannel);
+    const notDefaultTextChannels = textChannels.filter(
+      (ch) => ch.id !== serverData.reportChannel
+    );
     const defaultTextChannel = textChannels.get(serverData.reportChannel);
 
     const components = buildSessionStartMessage({
@@ -22,6 +28,7 @@ export default {
       currentChannels: serverData.studyChannels,
       notDefaultTextChannels,
       defaultTextChannel,
+      selectedTime: serverData.minTime / 60,
     });
 
     const response = await interaction.reply({

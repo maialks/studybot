@@ -70,7 +70,10 @@ export interface BotClient extends Client {
 
 export interface AnyCommand {
   data: SlashCommandBuilder;
-  execute: (interaction: CommandInteraction, client: Client) => unknown | Promise<unknown>;
+  execute: (
+    interaction: CommandInteraction,
+    client: Client
+  ) => unknown | Promise<unknown>;
 }
 
 export interface ConfigState {
@@ -78,6 +81,7 @@ export interface ConfigState {
     reportChannel: string;
     studyChannels: string[];
     timezone?: string;
+    minTime: number;
   };
   completed: boolean;
 }
