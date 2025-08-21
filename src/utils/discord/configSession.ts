@@ -4,9 +4,10 @@ import { ConfigState } from '../../types';
 const configSessions: Map<string, ConfigState> = new Map();
 
 export async function startSession(serverId: string, userId: string): Promise<void> {
-  const { timezone } = await serverService.findServer(serverId);
+  const { timezone, reportChannel, studyChannels, minTime } =
+    await serverService.findServer(serverId);
   configSessions.set(`${serverId}:${userId}`, {
-    data: { reportChannel: '', studyChannels: [], timezone, minTime: -1 },
+    data: { timezone, reportChannel, studyChannels, minTime },
     completed: false,
   });
 }
@@ -22,6 +23,7 @@ function updateSession(
   const updatedData = { ...session.data, ...payload };
 
   const newSession = {
+    modified: true,
     data: updatedData,
     completed:
       !!updatedData.reportChannel &&

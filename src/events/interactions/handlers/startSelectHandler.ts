@@ -32,38 +32,11 @@ export default async function startSelectHandler(
   if (interaction.customId === 'SAVE-BTN' && interaction.isButton()) {
     const session = configSession.findSession(guildId, userId);
 
-    const {
-      reportChannel: defaultReportChannel,
-      studyChannels: defaultStudyChannels,
-      timezone,
-      minTime,
-    } = await serverService.findServer(guildId);
-
-    const { reportChannel: inputReportChannel, studyChannels: inputStudyChannels } =
-      session.data;
-    const changed =
-      defaultReportChannel === inputReportChannel &&
-      defaultStudyChannels.length === inputStudyChannels.length &&
-      inputStudyChannels.every((ch) => defaultStudyChannels.includes(ch));
-
-    if (
-      (inputReportChannel || defaultReportChannel) &&
-      (inputStudyChannels.length || defaultStudyChannels.length)
-    ) {
-      closeSession(
-        {
-          reportChannel: inputReportChannel || defaultReportChannel,
-          studyChannels: inputStudyChannels.length
-            ? inputStudyChannels
-            : defaultStudyChannels,
-          timezone,
-          minTime: session.data.minTime !== -1 ? session.data.minTime : minTime,
-        },
-        changed
-      );
+    if (session.completed) {
+      closeSession(session.data, session.modified);
     } else {
       const response = await interaction.reply({
-        content: `<@${userId}>, you can't save setting with data missing. Please fulfill all the fields`,
+        content: `<@${userId}>, you can't save settings with data missing. Please fulfill all the fields`,
         withResponse: true,
       });
       if (response.resource !== null && response.resource.message !== null) {
@@ -76,50 +49,18 @@ export default async function startSelectHandler(
   }
 
   if (interaction.customId === 'STUDY-CH-SELECT' && interaction.isStringSelectMenu()) {
-    const session = configSession.updateSession(guildId, userId, {
+    configSession.updateSession(guildId, userId, {
       studyChannels: interaction.values,
     });
-
-    if (session.completed) {
-      closeSession(session.data);
-    } else {
-      const response = await interaction.reply({
-        content: `<@${userId}>, you successfully defined ${session.data.studyChannels
-          .map((ch) => `<#${ch}>`)
-          .join(
-            ' '
-          )} as your study channels, please finish filling the form or click save to send it  if already filled`,
-        withResponse: true,
-      });
-
-      if (response.resource !== null && response.resource.message !== null) {
-        const channelId = response.resource.message.channelId;
-        const messageId = response.resource.message.id;
-        setTimeout(() => deleteMessage(client, channelId, messageId), 4500);
-      }
-    }
+    await interaction.deferUpdate();
     return;
   }
 
   if ((interaction.customId === 'REPORT-CH-SELECT', interaction.isStringSelectMenu())) {
-    const session = configSession.updateSession(guildId, userId, {
+    configSession.updateSession(guildId, userId, {
       reportChannel: interaction.values[0],
     });
-
-    if (session.completed) {
-      closeSession(session.data);
-    } else {
-      const response = await interaction.reply({
-        content: `<@${userId}>, you successfully defined <#${session.data.reportChannel}> as your report channel, please finish filling the form or click save to send it if already filled`,
-        withResponse: true,
-      });
-
-      if (response.resource !== null && response.resource.message !== null) {
-        const channelId = response.resource.message.channelId;
-        const messageId = response.resource.message.id;
-        setTimeout(() => deleteMessage(client, channelId, messageId), 3500);
-      }
-    }
+    await interaction.deferUpdate();
     return;
   }
 
@@ -130,6 +71,5 @@ export default async function startSelectHandler(
       minTime: value,
     });
     await interaction.deferUpdate();
-    console.log(session);
   }
 }

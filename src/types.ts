@@ -84,4 +84,5 @@ export interface ConfigState {
     minTime: number;
   };
   completed: boolean;
+  modified?: boolean;
 }
