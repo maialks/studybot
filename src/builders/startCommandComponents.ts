@@ -18,19 +18,22 @@ import { ConfigState } from '../types';
 
 interface BuildSessionStartMessageProps {
   voiceChannels: Collection<string, VoiceChannel>;
-  currentChannels: string[];
+  defaultStudyChannels: string[];
   notDefaultTextChannels: Collection<string, TextChannel>;
   defaultTextChannel: TextChannel | undefined;
   selectedTime: number;
 }
 
-export function buildSessionStartMessage({
-  voiceChannels,
-  currentChannels,
-  notDefaultTextChannels,
-  defaultTextChannel,
-  selectedTime,
-}: BuildSessionStartMessageProps): (SectionBuilder | ContainerBuilder)[] {
+export function buildSessionStartMessage(
+  {
+    voiceChannels,
+    defaultStudyChannels,
+    notDefaultTextChannels,
+    defaultTextChannel,
+    selectedTime,
+  }: BuildSessionStartMessageProps,
+  formComplete: boolean
+): (SectionBuilder | ContainerBuilder)[] {
   return [
     // Bloco de introdução
     new SectionBuilder()
@@ -61,7 +64,7 @@ export function buildSessionStartMessage({
                 new StringSelectMenuOptionBuilder()
                   .setValue(ch.id)
                   .setLabel(ch.name)
-                  .setDefault(currentChannels.includes(ch.id))
+                  .setDefault(defaultStudyChannels.includes(ch.id))
               )
             )
         )
@@ -180,6 +183,7 @@ export function buildSessionStartMessage({
             .setStyle(ButtonStyle.Success)
             .setLabel('Save')
             .setCustomId('SAVE-BTN')
+            .setDisabled(!formComplete)
         )
       ),
   ];

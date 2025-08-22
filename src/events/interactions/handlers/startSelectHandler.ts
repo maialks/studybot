@@ -1,20 +1,13 @@
-import {
-  type StringSelectMenuInteraction,
-  type Client,
-  ButtonInteraction,
-} from 'discord.js';
+import { type StringSelectMenuInteraction, type Client, ButtonInteraction } from 'discord.js';
 import serverService from '../../../services/serverService';
 import configSession from '../../../utils/discord/configSession';
 import type { ConfigState } from '../../../types';
 import deleteMessage from '../../../utils/discord/deleteMessage';
 import { buildSessionClosingMessage } from '../../../builders/startCommandComponents';
-import { minTime } from 'date-fns/constants';
+import { getUpdatedUI } from '../helpers/interfaceRefreshHelper';
 type Interaction = StringSelectMenuInteraction | ButtonInteraction;
 
-export default async function startSelectHandler(
-  interaction: Interaction,
-  client: Client
-) {
+export default async function startSelectHandler(interaction: Interaction, client: Client) {
   if (!interaction.guildId) return;
   const [guildId, userId] = [interaction.guildId, interaction.user.id];
 
@@ -48,28 +41,31 @@ export default async function startSelectHandler(
     return;
   }
 
+  let session: ConfigState | undefined = undefined;
+
   if (interaction.customId === 'STUDY-CH-SELECT' && interaction.isStringSelectMenu()) {
-    configSession.updateSession(guildId, userId, {
+    session = configSession.updateSession(guildId, userId, {
       studyChannels: interaction.values,
     });
-    await interaction.deferUpdate();
-    return;
   }
 
-  if ((interaction.customId === 'REPORT-CH-SELECT', interaction.isStringSelectMenu())) {
-    configSession.updateSession(guildId, userId, {
+  if (interaction.customId === 'REPORT-CH-SELECT' && interaction.isStringSelectMenu()) {
+    session = configSession.updateSession(guildId, userId, {
       reportChannel: interaction.values[0],
     });
-    await interaction.deferUpdate();
-    return;
   }
 
   if (interaction.customId.startsWith('TIME-BTN') && interaction.isButton()) {
     const value = Number(interaction.customId.slice(-1));
     if (isNaN(value)) return;
-    const session = configSession.updateSession(guildId, userId, {
+    session = configSession.updateSession(guildId, userId, {
       minTime: value,
     });
-    await interaction.deferUpdate();
   }
+
+  if (session)
+    interaction.update({
+      components: getUpdatedUI(interaction, session),
+      flags: ['IsComponentsV2'],
+    });
 }

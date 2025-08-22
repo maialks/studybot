@@ -3,13 +3,16 @@ import { ConfigState } from '../../types';
 
 const configSessions: Map<string, ConfigState> = new Map();
 
-export async function startSession(serverId: string, userId: string): Promise<void> {
-  const { timezone, reportChannel, studyChannels, minTime } =
-    await serverService.findServer(serverId);
-  configSessions.set(`${serverId}:${userId}`, {
+export async function startSession(serverId: string, userId: string): Promise<ConfigState> {
+  const { timezone, reportChannel, studyChannels, minTime } = await serverService.findServer(
+    serverId
+  );
+  const session = {
     data: { timezone, reportChannel, studyChannels, minTime },
-    completed: false,
-  });
+    completed: !!reportChannel && !!studyChannels.length && !!minTime,
+  };
+  configSessions.set(`${serverId}:${userId}`, session);
+  return session;
 }
 
 function updateSession(
@@ -20,6 +23,7 @@ function updateSession(
   const session = configSessions.get(`${serverId}:${userId}`);
   if (!session) throw new Error('config session closed/not found, try again later');
 
+  console.log(payload);
   const updatedData = { ...session.data, ...payload };
 
   const newSession = {
@@ -38,7 +42,6 @@ function updateSession(
 
 export function deleteSession(serverId: string, userId: string): void {
   configSessions.delete(`${serverId}:${userId}`);
-  console.log(configSessions);
 }
 
 function findSession(serverId: string, userId: string): ConfigState {
