@@ -1,21 +1,32 @@
-import { Events, type VoiceState } from 'discord.js';
-import { add } from 'date-fns';
-
+// External libraries and Discord.js
+import { type Client, type VoiceState, type ClientUser, type Guild, Events } from 'discord.js';
+import { add, format } from 'date-fns';
 import type { Types } from 'mongoose';
 
-import buildEmbed from '../builders/endSessionEmbed';
-
+// services
 import serverService from '../services/serverService';
 import userService from '../services/userService';
 import studySessionService from '../services/studySessionService';
 import sessionService from '../services/sessionService';
-import retryAsync from '../utils/general/retryAsync';
+
+// utils and builders
+import buildEmbed from '../builders/endSessionEmbed';
 import logger from '../utils/general/logger';
-import { format } from 'date-fns';
 import { isJsonString } from '../utils/general/jsonValidator';
+import { isMongoError } from '../utils/db/mongo';
+import { safeSendMessage } from '../utils/discord/channelUtils';
 
 async function handleUserJoinedStudy(userId: Types.ObjectId) {
-  await studySessionService.startStudySession(userId);
+  try {
+    await studySessionService.startStudySession(userId);
+  } catch (error: unknown) {
+    if (isMongoError(error) && error.errorResponse?.code === 11000) {
+      await sessionService.deleteOpenSession(error.errorResponse?.keyValue?.user);
+      await studySessionService.startStudySession(userId);
+    } else {
+      logger.error(error);
+    }
+  }
 }
 
 async function handleUserLeftStudy(
@@ -23,11 +34,13 @@ async function handleUserLeftStudy(
   reportChannelId: string,
   timezone: string,
   member: VoiceState['member'],
-  serverId: string
+  guild: Guild,
+  clientUser: ClientUser
 ) {
-  const { minTime } = await serverService.findServer(serverId);
-  const channel = await member?.guild.channels.fetch(reportChannelId);
-  if (!channel || !channel.isTextBased() || !member?.user) return;
+  const { minTime } = await serverService.findServer(guild.id);
+  if (!member?.user) return;
+  const user = member.user;
+
   try {
     const closedSession = await studySessionService.endStudySession(userId, minTime);
     const todaySessions = await sessionService.sessionsInInterval(
@@ -35,56 +48,59 @@ async function handleUserLeftStudy(
       closedSession.date,
       add(closedSession.date, { days: 1 })
     );
-    retryAsync(channel.send.bind(channel), 5, 1000, {
-      embeds: [
-        buildEmbed(
-          closedSession,
-          timezone,
-          member?.user,
-          todaySessions.reduce((acc, cur) => acc + cur.duration, 0)
-        ),
-      ],
-    });
+
+    await safeSendMessage(
+      reportChannelId,
+      {
+        embeds: [
+          buildEmbed(
+            closedSession,
+            timezone,
+            user,
+            todaySessions.reduce((acc, cur) => acc + cur.duration, 0)
+          ),
+        ],
+      },
+      guild,
+      clientUser
+    );
   } catch (error: unknown) {
-    if (!(error instanceof Error)) return logger.error(error);
-    if (isJsonString(error.message)) {
+    if (error instanceof Error && isJsonString(error.message)) {
       const errorData = JSON.parse(error.message);
       if (errorData.type === 'bellow min length') {
         const date = new Date(0);
-        channel.send(
-          `<@${member.user.id}>, your study session was too short to be saved | ${format(
+        await safeSendMessage(
+          reportChannelId,
+          `<@${user.id}>, your study session was too short to be saved | ${format(
             date.setSeconds(errorData.duration),
             'mm:ss'
-          )} is less than ${minTime / 60}min`
+          )} is less than ${Math.floor(minTime / 60)}min`,
+          guild,
+          clientUser
         );
       }
-    } else {
-      logger.error(error.message);
     }
   }
 }
 
 const voiceStateHandler = {
   name: Events.VoiceStateUpdate,
-  execute: async (oldState: VoiceState, newState: VoiceState) => {
+  execute: async (oldState: VoiceState, newState: VoiceState, client: Client) => {
     if (oldState.channelId === newState.channelId) return;
 
     const server = await serverService.findOrCreateServer(newState.guild.id);
-    if (!server) return;
+    if (!server || !client.user) return;
 
     const member = newState.member?.user;
     const wasStudying = server.studyChannels.includes(oldState.channelId || '');
     const nowStudying = server.studyChannels.includes(newState.channelId || '');
 
-    // early return se o usuário não é relevante
     if ((!wasStudying && !nowStudying) || !member || member.bot) return;
 
     const user = await userService.findOrCreateUser(member.id);
     if (!user) return;
 
-    if (!wasStudying && nowStudying) {
-      await handleUserJoinedStudy(user._id);
-    }
+    if (!wasStudying && nowStudying) await handleUserJoinedStudy(user._id);
 
     if (wasStudying && !nowStudying) {
       await handleUserLeftStudy(
@@ -92,7 +108,8 @@ const voiceStateHandler = {
         server.reportChannel,
         server.timezone,
         newState.member,
-        newState.guild.id
+        newState.guild,
+        client.user
       );
     }
   },

@@ -39,7 +39,7 @@ export function buildSessionStartMessage(
     new SectionBuilder()
       .addTextDisplayComponents(
         new TextDisplayBuilder().setContent(
-          "## Welcome to Studybot \n\nI'm here to help Discord communities organize and monitor study sessions. \nBut before we start, you need to configure some things:"
+          "## Welcome to Studybot \n\nI'm here to help Discord communities organize and manage study sessions.\nFirst, let's get a few things set up:"
         )
       )
       .setThumbnailAccessory((thumbnail) =>
@@ -194,13 +194,31 @@ export function buildSessionClosingMessage(data: ConfigState['data']): SectionBu
     new SectionBuilder()
       .addTextDisplayComponents(
         new TextDisplayBuilder().setContent(
-          `## ✅ Configuration Saved Successfully! Your Studybot settings have been updated.\nHere’s the current configuration: \n**Report Channel:** ${`<#${data.reportChannel}>`}\n**Study Channels:** ${data.studyChannels
+          `## ✅ Configuration Saved Successfully! Your Studybot settings have been updated.\nHere’s the current configuration: \n**Minimum Session Time:** ${
+            data.minTime
+          }min \n**Report Channel:**\n• <#${
+            data.reportChannel
+          }>\n**Study Channels:** ${data.studyChannels
             .map((ch) => `\n• <#${ch}>`)
             .join(
               ' '
-            )}\n\nYou can always run this command again if you need to update your settings. \n**${
+            )}\n\nYou can always run this command again to update your settings. \n\n**${
             timezones.find((tz) => tz.value === data.timezone)?.name
-          }** is your current timezone.\nIf you need to change it, please use _/set-timezone_ command.`
+          }** is your current timezone.\nIf you need to change it, use _/set-timezone_ command.`
+        )
+      )
+      .setThumbnailAccessory((thumbnail) =>
+        thumbnail.setDescription('bot icon').setURL('https://i.imgur.com/ls2IPmi.png')
+      ),
+  ];
+}
+
+export function buildAlreadyConfiguringMessage(): SectionBuilder[] {
+  return [
+    new SectionBuilder()
+      .addTextDisplayComponents(
+        new TextDisplayBuilder().setContent(
+          `## ⚠️ Configuration Already in Progress\nSomeone is already configuring Studybot on this server.\n\nTo avoid conflicts, only one configuration session can run at a time. Please try again later once the current session is finished.`
         )
       )
       .setThumbnailAccessory((thumbnail) =>

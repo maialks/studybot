@@ -1,9 +1,13 @@
 import Session from '../models/sessionModel';
 import type { NewSession, Session as SessionInterface } from '../types';
-import type { Types } from 'mongoose';
+import type { ObjectId, Types } from 'mongoose';
 
 const createSessionEntry = async function (params: NewSession): Promise<void> {
-  await Session.create(params);
+  try {
+    await Session.create(params);
+  } catch (error: unknown) {
+    throw error;
+  }
 };
 
 const endOpenSession = async function (
@@ -42,6 +46,14 @@ const endOpenSession = async function (
   }
 };
 
+const deleteOpenSession = async function (user: ObjectId) {
+  try {
+    await Session.findOneAndDelete({ user });
+  } catch (error: unknown) {
+    throw error;
+  }
+};
+
 const sessionsInInterval = async function (
   user: Types.ObjectId,
   start: Date,
@@ -50,4 +62,4 @@ const sessionsInInterval = async function (
   return await Session.find({ user, date: { $gte: start, $lt: end } });
 };
 
-export default { createSessionEntry, endOpenSession, sessionsInInterval };
+export default { createSessionEntry, endOpenSession, sessionsInInterval, deleteOpenSession };

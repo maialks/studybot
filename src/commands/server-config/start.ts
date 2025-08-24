@@ -1,9 +1,15 @@
-import { SlashCommandBuilder, type ChatInputCommandInteraction, type Client } from 'discord.js';
-import serverService from '../../services/serverService';
-import { startSession, deleteSession } from '../../utils/discord/configSession';
-import deleteMessage from '../../utils/discord/deleteMessage';
-import { buildSessionStartMessage } from '../../builders/startCommandComponents';
+import {
+  SlashCommandBuilder,
+  type ChatInputCommandInteraction,
+  type Client,
+  type SectionBuilder,
+  type ContainerBuilder,
+} from 'discord.js';
+import { startSession, deleteSession, findSession } from '../../utils/discord/configSession';
+import { deleteMessage } from '../../utils/discord/channelUtils';
 import { getUpdatedUI } from '../../events/interactions/helpers/interfaceRefreshHelper';
+import { buildAlreadyConfiguringMessage } from '../../builders/startCommandComponents';
+import logger from '../../utils/general/logger';
 
 export default {
   data: new SlashCommandBuilder()
@@ -11,28 +17,34 @@ export default {
     .setDescription('Quick config for your Discord bot'),
 
   async execute(interaction: ChatInputCommandInteraction, client: Client) {
+    console.log('start execute running');
     if (!interaction.guild || !interaction.guildId) return;
-    const serverData = await serverService.findServer(interaction.guildId);
+    const guildId = interaction.guildId;
 
-    // prettier-ignore
-    const guildId = interaction.guildId, userId = interaction.user.id;
-    const session = await startSession(guildId, userId);
+    let components: (SectionBuilder | ContainerBuilder)[] = [];
+    let ephemeral = false;
 
-    const components = getUpdatedUI(interaction, session);
+    if (findSession(guildId)) {
+      components = buildAlreadyConfiguringMessage();
+      ephemeral = true;
+    } else {
+      const session = await startSession(client, interaction);
+      components = getUpdatedUI(client, interaction, session);
+    }
 
     const response = await interaction.reply({
       components,
-      flags: ['IsComponentsV2'],
+      flags: ephemeral ? ['IsComponentsV2', 'Ephemeral'] : ['IsComponentsV2'],
       withResponse: true,
     });
 
     // config timeout
-    if (response.resource !== null && response.resource.message !== null) {
+    if (!ephemeral && response.resource !== null && response.resource.message !== null) {
       const channelId = response.resource.message.channelId;
       const messageId = response.resource.message.id;
       setTimeout(() => {
         deleteMessage(client, channelId, messageId);
-        deleteSession(guildId, userId);
+        deleteSession(guildId);
       }, 180000);
     }
   },

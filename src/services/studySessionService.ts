@@ -6,12 +6,16 @@ import { Session } from '../types';
 
 async function startStudySession(userId: Types.ObjectId): Promise<void> {
   const now = new Date();
-  retryAsync(sessionService.createSessionEntry, 2, 2000, {
-    src: 'discord-bot',
-    user: userId,
-    date: getStartOfDay(now),
-    start: now,
-  });
+  try {
+    await retryAsync(sessionService.createSessionEntry, 2, 2000, {
+      src: 'discord-bot',
+      user: userId,
+      date: getStartOfDay(now),
+      start: now,
+    });
+  } catch (error: unknown) {
+    throw error;
+  }
 }
 
 async function endStudySession(userId: Types.ObjectId, serverMin: number): Promise<Session> {

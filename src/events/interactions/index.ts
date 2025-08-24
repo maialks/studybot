@@ -27,13 +27,11 @@ export default {
       return;
     }
 
-    // console.log(interaction.isChatInputCommand());
     if (interaction.isChatInputCommand()) {
       await chatInputCommandHandler(interaction);
       return;
     }
 
-    // console.log(interaction.isAutocomplete());
     if (interaction.isAutocomplete()) {
       await chatInputAutoCompleteHandler(interaction);
       return;

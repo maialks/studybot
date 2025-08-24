@@ -1,6 +1,7 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
 import timezones from '../../config/timezones';
 import serverService from '../../services/serverService';
+import logger from '../../utils/general/logger';
 
 export default {
   data: new SlashCommandBuilder()
@@ -35,7 +36,7 @@ export default {
         `Timezone set to:\n${selectedTimezone.name} - (${selectedTimezone.value})`
       );
     } catch (err) {
-      console.log(err);
+      logger.error(err);
     }
   },
 };
