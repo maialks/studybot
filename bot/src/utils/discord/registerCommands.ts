@@ -44,7 +44,7 @@ async function loadDir(client: BotClient | Client, dir: string) {
       (command: AnyCommand): WrappedCommand =>
       (interaction: CommandInteraction) =>
         Promise.resolve(command.execute(interaction, client)).catch((e) =>
-          logger.error(`Error in event ${command.data.name}:`, e)
+          logger.error(`Error in command ${command.data.name}:`, e)
         );
 
     if (mod.default) {

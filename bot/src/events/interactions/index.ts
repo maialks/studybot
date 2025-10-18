@@ -1,4 +1,3 @@
-// src/events/interactionCreate.ts
 import { Events, type Client, type Interaction } from 'discord.js';
 import chatInputCommandHandler from './handlers/chatInputCommandHandler';
 import chatInputAutoCompleteHandler from './handlers/chatInputAutoCompleteHandler';
@@ -26,7 +25,6 @@ export default {
       await startSelectHandler(interaction, client);
       return;
     }
-
     if (interaction.isChatInputCommand()) {
       await chatInputCommandHandler(interaction);
       return;

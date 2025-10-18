@@ -12,6 +12,16 @@ export async function connectMongo(URI: string) {
   }
 }
 
+export async function disconnectMongo() {
+  try {
+    await mongoose.connection.close();
+    logger.info('mongodb connection closed');
+  } catch (error: unknown) {
+    if (error instanceof MongooseError) logger.error(`Mongoose error: ${error.message}`);
+    else logger.error('unable to disconnect do mongodb: ', error);
+  }
+}
+
 export function isMongoError(
   error: unknown
 ): error is { errorResponse?: { code?: number; keyValue: { user: ObjectId } } } {
