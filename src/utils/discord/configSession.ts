@@ -10,6 +10,8 @@ export async function startSession(
   interaction: Interaction
 ): Promise<ConfigState> {
   if (!client.user || !interaction.guild) throw new Error('guild or client user missing');
+  const user = client.user,
+    guild = interaction.guild;
 
   const { timezone, reportChannel, studyChannels, minTime } = await serverService.findServer(
     interaction.guild.id
@@ -19,7 +21,7 @@ export async function startSession(
     await Promise.all(
       studyChannels.map(async (ch) => ({
         channelId: ch,
-        isValid: await isValidChannel(ch, interaction.guild!, client.user!),
+        isValid: await isValidChannel(ch, guild, user),
       }))
     )
   )

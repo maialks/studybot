@@ -48,7 +48,7 @@ async function loadDir(dir: string): Promise<AnyCommand[]> {
       const command = mod[key];
       if (isValidCommand(command)) {
         commands.push(command);
-        logger.info(`Command addead to commands array (named): ${command.data.name}`);
+        logger.info(`Command added to commands array (named): ${command.data.name}`);
       }
     }
   }
@@ -71,7 +71,7 @@ async function deployCommands(): Promise<void> {
       body: commands.map((command) => command.data.toJSON()),
     })) as APIApplicationCommand[];
   } else {
-    data = (await rest.put(Routes.applicationGuildCommands(env.APP_ID, env.TEST_GUILD), {
+    data = (await rest.put(Routes.applicationGuildCommands(env.APP_ID, env.DEV_GUILD), {
       body: commands.map((command) => command.data.toJSON()),
     })) as APIApplicationCommand[];
   }

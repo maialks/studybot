@@ -1,4 +1,5 @@
 import type { ChatInputCommandInteraction } from 'discord.js';
+import logger from '../../../utils/general/logger';
 
 export default async function chatInputCommandHandler(interaction: ChatInputCommandInteraction) {
   // @ts-expect-error discord client does not have commands collection by default anymore
@@ -7,7 +8,7 @@ export default async function chatInputCommandHandler(interaction: ChatInputComm
   try {
     await command.execute(interaction);
   } catch (err) {
-    console.error(err);
+    logger.error(err);
     if (interaction.deferred || interaction.replied) {
       await interaction.followUp({
         content: 'erro ao executar comando',

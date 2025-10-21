@@ -3,11 +3,7 @@ import type { NewSession, Session as SessionInterface } from '../types';
 import type { ObjectId, Types } from 'mongoose';
 
 const createSessionEntry = async function (params: NewSession): Promise<void> {
-  try {
-    await Session.create(params);
-  } catch (error: unknown) {
-    throw error;
-  }
+  await Session.create(params);
 };
 
 const endOpenSession = async function (
@@ -15,43 +11,35 @@ const endOpenSession = async function (
   serverMin: number
 ): Promise<SessionInterface> {
   const now = new Date();
-  try {
-    const updatedSession = await Session.findOneAndUpdate(
-      { user: user.toString(), end: null }, // Filtro para encontrar a sessão aberta
-      [
-        {
-          $set: {
-            end: now, // Data/hora atual do servidor MongoDB
-            duration: {
-              $floor: { $divide: [{ $subtract: [now, '$start'] }, 1000] }, // Diferença em segundos
-            },
+  const updatedSession = await Session.findOneAndUpdate(
+    { user: user.toString(), end: null }, // Filtro para encontrar a sessão aberta
+    [
+      {
+        $set: {
+          end: now, // Data/hora atual do servidor MongoDB
+          duration: {
+            $floor: { $divide: [{ $subtract: [now, '$start'] }, 1000] }, // Diferença em segundos
           },
         },
-      ],
-      { new: true }
+      },
+    ],
+    { new: true }
+  );
+  if (!updatedSession) throw new Error('No open session found for user');
+  if (updatedSession.duration < serverMin) {
+    await Session.findByIdAndDelete(updatedSession._id);
+    throw new Error(
+      JSON.stringify({
+        type: 'bellow min length',
+        duration: updatedSession.duration,
+      })
     );
-    if (!updatedSession) throw new Error('No open session found for user');
-    if (updatedSession.duration < serverMin) {
-      await Session.findByIdAndDelete(updatedSession._id);
-      throw new Error(
-        JSON.stringify({
-          type: 'bellow min length',
-          duration: updatedSession.duration,
-        })
-      );
-    }
-    return updatedSession;
-  } catch (error: unknown) {
-    throw error;
   }
+  return updatedSession;
 };
 
-const deleteOpenSession = async function (user: ObjectId) {
-  try {
-    await Session.findOneAndDelete({ user });
-  } catch (error: unknown) {
-    throw error;
-  }
+const deleteOpenSession = async function (user: ObjectId | Types.ObjectId) {
+  await Session.findOneAndDelete({ user });
 };
 
 const sessionsInInterval = async function (
@@ -62,4 +50,14 @@ const sessionsInInterval = async function (
   return await Session.find({ user, date: { $gte: start, $lt: end } });
 };
 
-export default { createSessionEntry, endOpenSession, sessionsInInterval, deleteOpenSession };
+const userSessionExists = async function (user: Types.ObjectId) {
+  return await Session.exists({ user });
+};
+
+export default {
+  createSessionEntry,
+  endOpenSession,
+  sessionsInInterval,
+  deleteOpenSession,
+  userSessionExists,
+};

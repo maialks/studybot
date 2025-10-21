@@ -1,4 +1,4 @@
-// External libraries and Discord.js
+// external libraries and Discord.js
 import { type Client, type VoiceState, type ClientUser, type Guild, Events } from 'discord.js';
 import { add, format } from 'date-fns';
 import type { Types } from 'mongoose';
@@ -10,11 +10,11 @@ import studySessionService from '../services/studySessionService';
 import sessionService from '../services/sessionService';
 
 // utils and builders
-import buildEmbed from '../builders/endSessionEmbed';
 import logger from '../utils/general/logger';
 import { isJsonString } from '../utils/general/jsonValidator';
 import { isMongoError } from '../utils/db/mongo';
 import { safeSendMessage } from '../utils/discord/channelUtils';
+import { buildStudySessionMessage } from '../builders/endSessionMessageComponent';
 
 async function handleUserJoinedStudy(userId: Types.ObjectId) {
   try {
@@ -48,19 +48,10 @@ async function handleUserLeftStudy(
       closedSession.date,
       add(closedSession.date, { days: 1 })
     );
-
+    const todaySessionsTotal = todaySessions.reduce((acc, session) => acc + session.duration, 0);
     await safeSendMessage(
       reportChannelId,
-      {
-        embeds: [
-          buildEmbed(
-            closedSession,
-            timezone,
-            user,
-            todaySessions.reduce((acc, cur) => acc + cur.duration, 0)
-          ),
-        ],
-      },
+      buildStudySessionMessage(closedSession, timezone, user, todaySessionsTotal),
       guild,
       clientUser
     );

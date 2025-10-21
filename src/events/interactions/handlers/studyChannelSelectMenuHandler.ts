@@ -11,7 +11,7 @@ export default async function (interaction: StringSelectMenuInteraction) {
     await interaction.reply(
       `Currently Tracked Channels:\n${interaction.values.map((ch) => `• <#${ch}>`).join('\n')}`
     );
-    interaction.message.delete();
+    await interaction.message.delete();
   } catch (error: unknown) {
     logger.error(error);
     if (interaction.deferred || interaction.replied) {

@@ -1,8 +1,6 @@
-import {
-  SlashCommandBuilder,
-  type ChatInputCommandInteraction,
-} from 'discord.js';
+import { SlashCommandBuilder, type ChatInputCommandInteraction } from 'discord.js';
 import serverService from '../../services/serverService';
+import logger from '../../utils/general/logger';
 
 export default {
   data: new SlashCommandBuilder()
@@ -12,17 +10,13 @@ export default {
     if (!interaction.guildId) return;
 
     try {
-      const studyChannels = await serverService.fetchStudyChannels(
-        interaction.guildId
-      );
+      const studyChannels = await serverService.fetchStudyChannels(interaction.guildId);
 
       await interaction.reply(
-        `Currently Tracked Channels:\n${studyChannels
-          .map((ch) => `• <#${ch}>`)
-          .join('\n')}`
+        `Currently Tracked Channels:\n${studyChannels.map((ch) => `• <#${ch}>`).join('\n')}`
       );
     } catch (error) {
-      console.error(error);
+      logger.error(error);
       await interaction.reply('❌ Failed to fetch study channels.');
     }
   },

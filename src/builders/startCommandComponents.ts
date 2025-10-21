@@ -14,7 +14,7 @@ import {
   SeparatorSpacingSize,
 } from 'discord.js';
 import timezones from '../config/timezones';
-import { ConfigState } from '../types';
+import { ConfigState, ComponentsContainer } from '../types';
 
 interface BuildSessionStartMessageProps {
   voiceChannels: Collection<string, VoiceChannel>;
@@ -33,7 +33,7 @@ export function buildSessionStartMessage(
     selectedTime,
   }: BuildSessionStartMessageProps,
   formComplete: boolean
-): (SectionBuilder | ContainerBuilder)[] {
+): ComponentsContainer {
   return [
     // Bloco de introdução
     new SectionBuilder()
@@ -204,7 +204,7 @@ export function buildSessionClosingMessage(data: ConfigState['data']): SectionBu
               ' '
             )}\n\nYou can always run this command again to update your settings. \n\n**${
             timezones.find((tz) => tz.value === data.timezone)?.name
-          }** is your current timezone.\nIf you need to change it, use _/set-timezone_ command.`
+          }** is your current timezone.\n\nIf you need to change it, use _/set-timezone_ command.`
         )
       )
       .setThumbnailAccessory((thumbnail) =>

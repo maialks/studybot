@@ -16,7 +16,7 @@ const createCommandInteraction = (
     isAutocomplete: () => type === 'autoComplete',
     isButton: () => type === 'button',
     reply,
-    guildId: '1429075291342639185',
+    guildId: '2309',
   };
 
   return { ...base, ...overrides } as Interaction;

@@ -9,7 +9,6 @@ import { startSession, deleteSession, findSession } from '../../utils/discord/co
 import { deleteMessage } from '../../utils/discord/channelUtils';
 import { getUpdatedUI } from '../../events/interactions/helpers/interfaceRefreshHelper';
 import { buildAlreadyConfiguringMessage } from '../../builders/startCommandComponents';
-import logger from '../../utils/general/logger';
 
 export default {
   data: new SlashCommandBuilder()
@@ -17,7 +16,6 @@ export default {
     .setDescription('Quick config for your Discord bot'),
 
   async execute(interaction: ChatInputCommandInteraction, client: Client) {
-    console.log('start execute running');
     if (!interaction.guild || !interaction.guildId) return;
     const guildId = interaction.guildId;
 

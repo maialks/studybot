@@ -1,17 +1,11 @@
-import {
-  ChannelType,
-  ChatInputCommandInteraction,
-  SlashCommandBuilder,
-} from 'discord.js';
+import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
 import serverService from '../../services/serverService';
 import logger from '../../utils/general/logger';
 
 export default {
   data: new SlashCommandBuilder()
     .setName('set-mininum-time')
-    .setDescription(
-      'Set the minimum duration a session must have to be saved to the database.'
-    )
+    .setDescription('Set the minimum duration a session must have to be saved to the database.')
     .addIntegerOption((option) =>
       option
         .setName('duration')

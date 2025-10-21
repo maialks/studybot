@@ -5,6 +5,9 @@ import type {
   Client,
   Collection,
   SlashCommandBuilder,
+  SectionBuilder,
+  SeparatorBuilder,
+  ContainerBuilder,
 } from 'discord.js';
 import type { Document, Types } from 'mongoose';
 import { src } from './utils/constants';
@@ -70,10 +73,7 @@ export interface BotClient extends Client {
 
 export interface AnyCommand {
   data: SlashCommandBuilder;
-  execute: (
-    interaction: CommandInteraction,
-    client: Client
-  ) => unknown | Promise<unknown>;
+  execute: (interaction: CommandInteraction, client: Client) => unknown | Promise<unknown>;
 }
 
 export interface ConfigState {
@@ -86,3 +86,5 @@ export interface ConfigState {
   completed: boolean;
   modified?: boolean;
 }
+
+export type ComponentsContainer = (SectionBuilder | ContainerBuilder | SeparatorBuilder)[];

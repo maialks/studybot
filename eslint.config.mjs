@@ -23,7 +23,7 @@ export default [
       // TypeScript rules
       '@typescript-eslint/no-unused-vars': [
         'warn',
-        { argsIgnorePattern: '^_' },
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' },
       ],
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/explicit-function-return-type': 'off',
@@ -34,18 +34,13 @@ export default [
       'node/no-unsupported-features/es-syntax': 'off',
 
       // General JS rules
-      'no-console': 'off',
+      'no-console': 'error',
       'no-var': 'error',
       'prefer-const': 'warn',
 
       // Prettier compatibility
       'prettier/prettier': 'off',
     },
-    ignores: [
-      '**/node_modules/**',
-      '**/dist/**',
-      '**/legacy/**',
-      '**/*.test.ts',
-    ],
+    ignores: ['**/node_modules/**', '**/dist/**', '**/legacy/**', '**/*.test.ts'],
   },
 ];

@@ -24,7 +24,7 @@ async function loadDir(client: Client, dir: string) {
       continue;
     }
 
-    if (!/\.(js|ts)$/.test(entry.name)) continue; // apenas .js/.ts
+    if (!/\.(js|ts)$/.test(entry.name)) continue;
 
     let mod;
     try {
@@ -36,7 +36,6 @@ async function loadDir(client: Client, dir: string) {
 
     const isValidEvent = (possibleEv: AnyEvent): boolean =>
       !!possibleEv?.name && typeof possibleEv.execute === 'function';
-    //!! converte para boolean
 
     type wrappedEvent = (...agrs: any[]) => Promise<unknown>;
     const wrapEvent =
@@ -52,7 +51,7 @@ async function loadDir(client: Client, dir: string) {
         const handler = wrapEvent(event);
         if (event.once) client.once(event.name, handler);
         else client.on(event.name, handler);
-        logger.info(`Event loaded (default): ${event.name}`);
+        // logger.info(`Event loaded (default): ${event.name}`);
       }
     }
 
@@ -63,7 +62,7 @@ async function loadDir(client: Client, dir: string) {
         const handler = wrapEvent(event);
         if (event.once) client.once(event.name, handler);
         else client.on(event.name, handler);
-        logger.info(`Event loaded (default): ${event.name}`);
+        // logger.info(`Event loaded (default): ${event.name}`);
       }
     }
   }
