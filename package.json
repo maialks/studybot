@@ -9,7 +9,8 @@
     "deploy_cmd_global": "tsx ./src/deployCommands.ts global",
     "deploy_cmd_guild": "tsx ./src/deployCommands.ts guild",
     "test": "npm run test:db:start && NODE_ENV=test tsx --test --test-concurrency=1 && npm run test:db:stop",
-    "test:only": "npm run test:db:start && NODE_ENV=test tsx --test --test-concurrency=1 --test-only && npm run test:db:stop"
+    "test:only": "npm run test:db:start && NODE_ENV=test tsx --test --test-concurrency=1 --test-only && npm run test:db:stop",
+    "eslint": "eslint './**/*.{js,jsx,ts,tsx}'"
   },
   "author": "",
   "license": "ISC",
