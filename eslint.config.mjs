@@ -20,7 +20,7 @@ export default [
       node,
     },
     rules: {
-      // TypeScript rules
+      // ts rules
       '@typescript-eslint/no-unused-vars': [
         'warn',
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' },
@@ -30,15 +30,15 @@ export default [
       '@typescript-eslint/no-inferrable-types': 'off',
       '@typescript-eslint/no-empty-function': 'off',
 
-      // Node.js rules
+      // node rules
       'node/no-unsupported-features/es-syntax': 'off',
 
-      // General JS rules
+      // general rules
       'no-console': 'error',
       'no-var': 'error',
       'prefer-const': 'warn',
 
-      // Prettier compatibility
+      // prettier
       'prettier/prettier': 'off',
     },
     ignores: ['**/node_modules/**', '**/dist/**', '**/legacy/**', '**/*.test.ts'],
