@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
-import type { Session } from '../types';
-import { src } from '../utils/constants';
+import type { Session } from '../types.js';
+import { src } from '../utils/constants.js';
 
 const sessionSchema = new mongoose.Schema<Session>({
   src: { type: String, enum: src, required: true },

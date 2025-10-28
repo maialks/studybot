@@ -1,6 +1,6 @@
 import { SlashCommandBuilder, type ChatInputCommandInteraction } from 'discord.js';
-import serverService from '../../services/serverService';
-import logger from '../../utils/general/logger';
+import serverService from '../../services/serverService.js';
+import logger from '../../utils/general/logger.js';
 
 export default {
   data: new SlashCommandBuilder()

@@ -1,5 +1,5 @@
-import { App } from './App';
-import logger from './utils/general/logger';
+import { App } from './App.js';
+import logger from './utils/general/logger.js';
 
 const app = new App();
 app.start().catch((error) => logger.error(error));

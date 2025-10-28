@@ -7,8 +7,8 @@ import {
   type VoiceChannel,
   type TextChannel,
 } from 'discord.js';
-import { buildSessionStartMessage } from '../../../builders/startCommandComponents';
-import type { ConfigState } from '../../../types';
+import { buildSessionStartMessage } from '../../../builders/startCommandComponents.js';
+import type { ConfigState } from '../../../types.js';
 
 export function getUpdatedUI(
   client: Client,

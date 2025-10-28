@@ -13,8 +13,8 @@ import {
   SeparatorBuilder,
   SeparatorSpacingSize,
 } from 'discord.js';
-import timezones from '../config/timezones';
-import { ConfigState, ComponentsContainer } from '../types';
+import timezones from '../config/timezones.js';
+import type { ConfigState, ComponentsContainer } from '../types.js';
 
 interface BuildSessionStartMessageProps {
   voiceChannels: Collection<string, VoiceChannel>;

@@ -1,10 +1,10 @@
 import { type APIApplicationCommand, REST, Routes } from 'discord.js';
-import env from './config/env';
+import env from './config/env.js';
 import { fileURLToPath, pathToFileURL } from 'url';
 import fs from 'fs';
 import path from 'path';
-import logger from './utils/general/logger';
-import type { AnyCommand } from './types';
+import logger from './utils/general/logger.js';
+import type { AnyCommand } from './types.js';
 
 async function importModule(filePath: string) {
   return await import(pathToFileURL(filePath).href);

@@ -1,20 +1,18 @@
 import { type StringSelectMenuInteraction, type Client, ButtonInteraction } from 'discord.js';
-import serverService from '../../../services/serverService';
-import configSession from '../../../utils/discord/configSession';
-import type { ConfigState } from '../../../types';
-import { deleteMessage } from '../../../utils/discord/channelUtils';
-import { buildSessionClosingMessage } from '../../../builders/startCommandComponents';
-import { getUpdatedUI } from '../helpers/interfaceRefreshHelper';
+import serverService from '../../../services/serverService.js';
+import configSession from '../../../utils/discord/configSession.js';
+import type { ConfigState } from '../../../types.js';
+import { deleteMessage } from '../../../utils/discord/channelUtils.js';
+import { buildSessionClosingMessage } from '../../../builders/startCommandComponents.js';
+import { getUpdatedUI } from '../helpers/interfaceRefreshHelper.js';
 
 type Interaction = StringSelectMenuInteraction | ButtonInteraction;
 
 export default async function startSelectHandler(interaction: Interaction, client: Client) {
-
   if (!interaction.guildId) return;
   const [guildId, userId] = [interaction.guildId, interaction.user.id];
 
   const closeSession = async (data: ConfigState['data'], changed = true) => {
-
     if (changed)
       await serverService.updateServer(guildId, { ...data, minTime: data.minTime * 60 });
 
@@ -31,10 +29,8 @@ export default async function startSelectHandler(interaction: Interaction, clien
     const session = configSession.findSession(guildId);
 
     if (session && session.completed) {
-
       closeSession(session.data, session.modified);
     } else {
-
       const response = await interaction.reply({
         content: `<@${userId}>, you can't save settings with data missing. Please fulfill all the fields`,
         withResponse: true,
@@ -53,13 +49,13 @@ export default async function startSelectHandler(interaction: Interaction, clien
 
   if (interaction.customId === 'STUDY-CH-SELECT' && interaction.isStringSelectMenu()) {
     session = configSession.updateSession(guildId, {
-      studyChannels: interaction.values, 
+      studyChannels: interaction.values,
     });
   }
 
   if (interaction.customId === 'REPORT-CH-SELECT' && interaction.isStringSelectMenu()) {
     session = configSession.updateSession(guildId, {
-      reportChannel: interaction.values[0], 
+      reportChannel: interaction.values[0],
     });
   }
 

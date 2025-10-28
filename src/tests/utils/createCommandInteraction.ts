@@ -1,4 +1,4 @@
-import { type Client, Interaction, InteractionType } from 'discord.js';
+import { type Client, type Interaction, InteractionType } from 'discord.js';
 
 const createCommandInteraction = (
   client: Client<true>,

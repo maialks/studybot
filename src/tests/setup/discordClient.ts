@@ -1,6 +1,6 @@
 import { Client, type ClientUser, Collection } from 'discord.js';
 import { DISCORD_INTENTS } from '../../config/discord.js';
-import { WrappedCommand } from '../../types.js';
+import type { WrappedCommand } from '../../types.js';
 import { registerCommands } from '../../utils/discord/registerCommands.js';
 import { registerEvents } from '../../utils/discord/registerEvents.js';
 

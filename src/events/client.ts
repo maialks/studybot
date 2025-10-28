@@ -1,7 +1,7 @@
-import type { EventHandler } from '../types';
+import type { EventHandler } from '../types.js';
 import type { Client } from 'discord.js';
 import { Events, ActivityType } from 'discord.js';
-import logger from '../utils/general/logger';
+import logger from '../utils/general/logger.js';
 
 const clientReady: EventHandler = {
   name: Events.ClientReady,

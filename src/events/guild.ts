@@ -1,6 +1,6 @@
-import serverService from '../services/serverService';
+import serverService from '../services/serverService.js';
 import type { Guild } from 'discord.js';
-import logger from '../utils/general/logger';
+import logger from '../utils/general/logger.js';
 
 export const joinGuild = {
   name: 'guildCreate',

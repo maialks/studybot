@@ -5,7 +5,7 @@ import {
   StringSelectMenuBuilder,
   StringSelectMenuOptionBuilder,
 } from 'discord.js';
-import serverService from '../../services/serverService';
+import serverService from '../../services/serverService.js';
 
 export default {
   data: new SlashCommandBuilder()

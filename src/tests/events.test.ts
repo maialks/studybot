@@ -8,14 +8,14 @@ import {
   type VoiceState,
   Collection,
 } from 'discord.js';
-import { createTestClient } from './setup/discordClient';
-import connectToTestDb from './setup/dbConnection';
-import serverService from '../services/serverService';
-import { disconnectMongo } from '../utils/db/mongo';
-import createVoiceState from './utils/createEvent';
-import sessionService from '../services/sessionService';
-import userService from '../services/userService';
-import { getStartOfDay } from '../utils/general/date';
+import { createTestClient } from './setup/discordClient.js';
+import connectToTestDb from './setup/dbConnection.js';
+import serverService from '../services/serverService.js';
+import { disconnectMongo } from '../utils/db/mongo.js';
+import createVoiceState from './utils/createEvent.js';
+import sessionService from '../services/sessionService.js';
+import userService from '../services/userService.js';
+import { getStartOfDay } from '../utils/general/date.js';
 
 describe('guild events', { concurrency: false }, async () => {
   before(async () => await connectToTestDb());

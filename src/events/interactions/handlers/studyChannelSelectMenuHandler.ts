@@ -1,6 +1,6 @@
 import { type StringSelectMenuInteraction } from 'discord.js';
-import serverService from '../../../services/serverService';
-import logger from '../../../utils/general/logger';
+import serverService from '../../../services/serverService.js';
+import logger from '../../../utils/general/logger.js';
 
 export default async function (interaction: StringSelectMenuInteraction) {
   try {

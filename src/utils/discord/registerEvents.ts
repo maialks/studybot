@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import type { Client } from 'discord.js';
 import { fileURLToPath, pathToFileURL } from 'url';
-import logger from '../general/logger';
+import logger from '../general/logger.js';
 
 type AnyEvent = {
   name: string;

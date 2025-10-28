@@ -1,14 +1,14 @@
 import { Client, Collection } from 'discord.js';
 import express from 'express';
 
-import { DISCORD_INTENTS } from './config/discord';
-import { connectMongo } from './utils/db/mongo';
-import logger from './utils/general/logger';
-import env from './config/env';
+import { DISCORD_INTENTS } from './config/discord.js';
+import { connectMongo } from './utils/db/mongo.js';
+import logger from './utils/general/logger.js';
+import env from './config/env.js';
 
-import { registerEvents } from './utils/discord/registerEvents';
-import { registerCommands } from './utils/discord/registerCommands';
-import type { WrappedCommand } from './types';
+import { registerEvents } from './utils/discord/registerEvents.js';
+import { registerCommands } from './utils/discord/registerCommands.js';
+import type { WrappedCommand } from './types.js';
 
 export class App {
   discord: Client;

@@ -1,5 +1,5 @@
 import type { ChatInputCommandInteraction } from 'discord.js';
-import logger from '../../../utils/general/logger';
+import logger from '../../../utils/general/logger.js';
 
 export default async function chatInputCommandHandler(interaction: ChatInputCommandInteraction) {
   // @ts-expect-error discord client does not have commands collection by default anymore

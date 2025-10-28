@@ -1,5 +1,5 @@
 import mongoose, { MongooseError } from 'mongoose';
-import logger from '../general/logger';
+import logger from '../general/logger.js';
 import { ObjectId } from 'mongoose';
 
 export async function connectMongo(URI: string) {

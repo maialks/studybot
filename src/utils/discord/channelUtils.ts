@@ -7,8 +7,8 @@ import {
   type ClientUser,
   type Client,
 } from 'discord.js';
-import logger from '../general/logger';
-import type { ComponentsContainer } from '../../types';
+import logger from '../general/logger.js';
+import type { ComponentsContainer } from '../../types.js';
 
 function getAvailableTextChannel(guild: Guild, botUser: User): TextChannel | undefined {
   const allChannels = guild.channels.cache

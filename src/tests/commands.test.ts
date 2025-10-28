@@ -1,11 +1,11 @@
 import assert from 'node:assert';
 import test, { after, afterEach, before, describe } from 'node:test';
-import { createTestClient } from './setup/discordClient';
-import createCommandInteraction from './utils/createCommandInteraction';
+import { createTestClient } from './setup/discordClient.js';
+import createCommandInteraction from './utils/createCommandInteraction.js';
 import { ActionRowBuilder, Client } from 'discord.js';
-import connectToTestDb from './setup/dbConnection';
-import { disconnectMongo } from '../utils/db/mongo';
-import serverService from '../services/serverService';
+import connectToTestDb from './setup/dbConnection.js';
+import { disconnectMongo } from '../utils/db/mongo.js';
+import serverService from '../services/serverService.js';
 
 describe('common commands', async () => {
   const testClient = await createTestClient();
@@ -54,6 +54,7 @@ describe('server config commands', { concurrency: false }, async () => {
   });
 
   test('/set-study-channels replies with channel select menu', async () => {
+    console.log('chama');
     const response = await new Promise<{ content: string; components: unknown[] }>(
       (resolve, reject) => {
         const reply = async (msg: { content: string; components: unknown[] }) => {

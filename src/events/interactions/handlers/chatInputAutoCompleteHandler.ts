@@ -1,5 +1,5 @@
 import type { AutocompleteInteraction } from 'discord.js';
-import timezones from '../../../config/timezones';
+import timezones from '../../../config/timezones.js';
 
 export default async function chatInputAutoCompleteHandler(interaction: AutocompleteInteraction) {
   if (interaction.commandName === 'set-timezone') {

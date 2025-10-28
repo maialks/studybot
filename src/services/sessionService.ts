@@ -1,5 +1,5 @@
-import Session from '../models/sessionModel';
-import type { NewSession, Session as SessionInterface } from '../types';
+import Session from '../models/sessionModel.js';
+import type { NewSession, Session as SessionInterface } from '../types.js';
 import type { ObjectId, Types } from 'mongoose';
 
 const createSessionEntry = async function (params: NewSession): Promise<void> {

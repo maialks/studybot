@@ -1,6 +1,6 @@
-import User from '../models/userModel';
-import { User as UserInterface } from '../types';
-import logger from '../utils/general/logger';
+import User from '../models/userModel.js';
+import type { User as UserInterface } from '../types.js';
+import logger from '../utils/general/logger.js';
 
 const createUser = async function (discordId: string): Promise<UserInterface> {
   const user = await User.create({ discordId });

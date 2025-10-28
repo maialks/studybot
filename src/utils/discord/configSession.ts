@@ -1,7 +1,7 @@
-import serverService from '../../services/serverService';
-import { ConfigState } from '../../types';
+import serverService from '../../services/serverService.js';
+import type { ConfigState } from '../../types.js';
 import type { Client, Interaction } from 'discord.js';
-import { isValidChannel } from './channelUtils';
+import { isValidChannel } from './channelUtils.js';
 
 const configSessions: Map<string, ConfigState> = new Map();
 

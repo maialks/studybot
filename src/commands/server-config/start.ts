@@ -5,10 +5,10 @@ import {
   type SectionBuilder,
   type ContainerBuilder,
 } from 'discord.js';
-import { startSession, deleteSession, findSession } from '../../utils/discord/configSession';
-import { deleteMessage } from '../../utils/discord/channelUtils';
-import { getUpdatedUI } from '../../events/interactions/helpers/interfaceRefreshHelper';
-import { buildAlreadyConfiguringMessage } from '../../builders/startCommandComponents';
+import { startSession, deleteSession, findSession } from '../../utils/discord/configSession.js';
+import { deleteMessage } from '../../utils/discord/channelUtils.js';
+import { getUpdatedUI } from '../../events/interactions/helpers/interfaceRefreshHelper.js';
+import { buildAlreadyConfiguringMessage } from '../../builders/startCommandComponents.js';
 
 export default {
   data: new SlashCommandBuilder()

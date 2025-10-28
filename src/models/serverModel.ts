@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import type { Server } from '../types';
+import type { Server } from '../types.js';
 
 const serverSchema = new mongoose.Schema<Server>(
   {
@@ -14,8 +14,7 @@ const serverSchema = new mongoose.Schema<Server>(
       default: 300,
       validate: {
         validator: Number.isInteger,
-        message:
-          '{VALUE} must be a integer number between 180 - 420 (calculated in secontds)',
+        message: '{VALUE} must be a integer number between 180 - 420 (calculated in secontds)',
       },
     },
   },

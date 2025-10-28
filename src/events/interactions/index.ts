@@ -1,8 +1,8 @@
 import { Events, type Client, type Interaction } from 'discord.js';
-import chatInputCommandHandler from './handlers/chatInputCommandHandler';
-import chatInputAutoCompleteHandler from './handlers/chatInputAutoCompleteHandler';
-import studyChannelSelectMenu from './handlers/studyChannelSelectMenuHandler';
-import startSelectHandler from './handlers/startSelectHandler';
+import chatInputCommandHandler from './handlers/chatInputCommandHandler.js';
+import chatInputAutoCompleteHandler from './handlers/chatInputAutoCompleteHandler.js';
+import studyChannelSelectMenu from './handlers/studyChannelSelectMenuHandler.js';
+import startSelectHandler from './handlers/startSelectHandler.js';
 
 export default {
   name: Events.InteractionCreate,

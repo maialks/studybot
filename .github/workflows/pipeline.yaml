@@ -1,0 +1,61 @@
+name: Main Pipeline
+
+on:
+  push:
+    branches: main
+
+jobs:
+  ci:
+    services:
+      mongo:
+        image: mongo:latest
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd="mongosh --eval 'db.runCommand({ ping: 1 })'"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=5
+          --health-start-period=10s
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.2'
+
+      - name: install dependencias
+        run: npm ci
+
+      - name: run linting
+        run: npm run eslint
+
+      - name: run tests
+        run: npm run test:ci
+
+      - name: build
+        run: npm run build
+
+      - name: check files
+        run: ls
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [ci]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.2'
+
+      - name: ssh setup
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{secrets.VM_SSH_KEY}}" | base64 -d > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H 192.168.0.105 >> ~/.ssh/known_hosts
+
+      - name: deploy to vm
+        run: ssh -i ~/.ssh/id_ed25519 lks@192.168.0.105 "bash ~/deploy-studybot.sh"

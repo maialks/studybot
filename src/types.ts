@@ -10,7 +10,7 @@ import type {
   ContainerBuilder,
 } from 'discord.js';
 import type { Document, Types } from 'mongoose';
-import { src } from './utils/constants';
+import { src } from './utils/constants.js';
 
 export interface EventHandler<T extends Events = Events> {
   name: T;

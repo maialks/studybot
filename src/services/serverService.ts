@@ -1,6 +1,6 @@
-import Server from '../models/serverModel';
-import logger from '../utils/general/logger';
-import { Server as ServerInterface } from '../types';
+import Server from '../models/serverModel.js';
+import logger from '../utils/general/logger.js';
+import type { Server as ServerInterface } from '../types.js';
 
 const createServer = async function (serverId: string): Promise<ServerInterface> {
   const server = await Server.create({ serverId });

@@ -4,17 +4,17 @@ import { add, format } from 'date-fns';
 import type { Types } from 'mongoose';
 
 // services
-import serverService from '../services/serverService';
-import userService from '../services/userService';
-import studySessionService from '../services/studySessionService';
-import sessionService from '../services/sessionService';
+import serverService from '../services/serverService.js';
+import userService from '../services/userService.js';
+import studySessionService from '../services/studySessionService.js';
+import sessionService from '../services/sessionService.js';
 
 // utils and builders
-import logger from '../utils/general/logger';
-import { isJsonString } from '../utils/general/jsonValidator';
-import { isMongoError } from '../utils/db/mongo';
-import { safeSendMessage } from '../utils/discord/channelUtils';
-import { buildStudySessionMessage } from '../builders/endSessionMessageComponent';
+import logger from '../utils/general/logger.js';
+import { isJsonString } from '../utils/general/jsonValidator.js';
+import { isMongoError } from '../utils/db/mongo.js';
+import { safeSendMessage } from '../utils/discord/channelUtils.js';
+import { buildStudySessionMessage } from '../builders/endSessionMessageComponent.js';
 
 async function handleUserJoinedStudy(userId: Types.ObjectId) {
   try {

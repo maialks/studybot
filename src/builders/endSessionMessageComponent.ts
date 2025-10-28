@@ -5,10 +5,10 @@ import {
   SeparatorBuilder,
   SeparatorSpacingSize,
 } from 'discord.js';
-import { formatToTimezone } from '../utils/general/date';
-import { flagMap } from '../config/timezones';
+import { formatToTimezone } from '../utils/general/date.js';
+import { flagMap } from '../config/timezones.js';
 import { isToday } from 'date-fns';
-import type { Session, ComponentsContainer } from '../types';
+import type { Session, ComponentsContainer } from '../types.js';
 import type { User as Member } from 'discord.js';
 
 export function buildStudySessionMessage(
@@ -37,7 +37,7 @@ export function buildStudySessionMessage(
 
   const totalTime =
     formattedData.totalH > 0
-      ? `${formattedData.totalH}h e ${formattedData.totalM ? `${formattedData.totalM}min` : ''}`
+      ? `${formattedData.totalH}h${formattedData.totalM ? ` e ${formattedData.totalM}min` : ''}`
       : `${formattedData.totalM}min`;
 
   const totalLabel = isToday(session.date)
