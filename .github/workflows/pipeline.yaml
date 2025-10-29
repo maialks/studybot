@@ -42,6 +42,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
+    concurrency: deploy-group
     needs: [ci]
     steps:
       - uses: actions/checkout@v4
@@ -55,7 +56,7 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{secrets.VM_SSH_KEY}}" | base64 -d > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -H 192.168.0.105 >> ~/.ssh/known_hosts
+          ssh-keyscan -H 129.148.57.144 >> ~/.ssh/known_hosts
 
       - name: deploy to vm
-        run: ssh -i ~/.ssh/id_ed25519 lks@192.168.0.105 "bash ~/deploy-studybot.sh"
+        run: ssh -i ~/.ssh/id_ed25519 ubuntu@129.148.57.144 "bash ~/deploy-studybot.sh"

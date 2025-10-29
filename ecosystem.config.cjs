@@ -3,7 +3,7 @@ module.exports = {
     {
       name: 'studybot',
       script: 'dist/main.js',
-      watch: '.',
+      watch: false,
       env: {
         NODE_ENV: 'dev',
       },
