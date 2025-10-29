@@ -59,7 +59,6 @@ async function loadDir(dir: string): Promise<AnyCommand[]> {
 const rest = new REST().setToken(env.BOT_TOKEN);
 
 async function deployCommands(): Promise<void> {
-  // @ts-expect-error false warning due to compilation issues
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
   const commandsPath = path.join(__dirname, 'commands');
