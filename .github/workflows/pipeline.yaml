@@ -83,7 +83,7 @@ jobs:
             [
               {
                 "title": "Studybot Deploy Successful",
-                "description": "**Repository:** [${{ github.repository }}](https://github.com/${{ github.repository }})\n**Branch:** `${{ github.ref_name }}`\n**Commit:** [${{ github.event.head_commit.id }}](https://github.com/${{ github.repository }}/commit/${{ github.event.head_commit.id }})\n\nThe deployment to Fly.io has been successfully completed.",
+                "description": "**Repository:** [${{ github.repository }}](https://github.com/${{ github.repository }})\n**Branch:** `${{ github.ref_name }}`\n**Commit:** [${{ github.event.head_commit.id }}](https://github.com/${{ github.repository }}/commit/${{ github.event.head_commit.id }})\n\nThe deployment of Studybot has been successfully completed.",
                 "color": 3066993,
                 "footer": { "text": "GitHub Actions | Studybot Deployment" },
                 "timestamp": "${{ github.event.head_commit.timestamp }}"
