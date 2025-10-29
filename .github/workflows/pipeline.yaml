@@ -42,8 +42,13 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    concurrency: deploy-group
     needs: [ci]
+    if: ${{ github.event_name == 'push'}}
+    concurrency: deploy-group
+
+    permissions:
+      contents: write
+
     steps:
       - uses: actions/checkout@v4
 
@@ -60,3 +65,9 @@ jobs:
 
       - name: deploy to vm
         run: ssh -i ~/.ssh/id_ed25519 ubuntu@129.148.57.144 "bash ~/deploy-studybot.sh"
+
+      - name: bump version and push tag
+        uses: anothrNick/github-tag-action@4ed44965e0db8dab2b466a16da04aec3cc312fd8
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BUMP: patch
