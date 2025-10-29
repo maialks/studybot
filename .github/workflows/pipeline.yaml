@@ -71,3 +71,50 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
+
+      # notificação sucesso
+      - name: discord notification - deploy success
+        if: success()
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_USERNAME: 'GitHub CI'
+          DISCORD_AVATAR: 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png'
+          DISCORD_EMBEDS: >-
+            [
+              {
+                "title": "Studybot Deploy Successful",
+                "description": "**Repository:** [${{ github.repository }}](https://github.com/${{ github.repository }})\n**Branch:** `${{ github.ref_name }}`\n**Commit:** [${{ github.event.head_commit.id }}](https://github.com/${{ github.repository }}/commit/${{ github.event.head_commit.id }})\n\nThe deployment to Fly.io has been successfully completed.",
+                "color": 3066993,
+                "footer": { "text": "GitHub Actions | Studybot Deployment" },
+                "timestamp": "${{ github.event.head_commit.timestamp }}"
+              }
+            ]
+        uses: Ilshidur/action-discord@d2594079a10f1d6739ee50a2471f0ca57418b554
+        with:
+          args: ''
+
+  # notificação de falha
+  notify_failure:
+    name: discord notificaton - pipeline failure
+    runs-on: ubuntu-latest
+    if: failure()
+    needs: [ci, deploy]
+    steps:
+      - name: Send Discord Notification
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_USERNAME: 'GitHub CI'
+          DISCORD_AVATAR: 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png'
+          DISCORD_EMBEDS: >-
+            [
+              {
+                "title": "Pipeline Failed",
+                "description": "**Repository:** [${{ github.repository }}](https://github.com/${{ github.repository }})\n**Branch:** `${{ github.ref_name }}`\n**Commit:** [${{ github.event.head_commit.id }}](https://github.com/${{ github.repository }}/commit/${{ github.event.head_commit.id }})\n\nA failure occurred in the CI/CD pipeline. Please check the logs for details.",
+                "color": 15158332,
+                "footer": { "text": "GitHub Actions | Studybot CI/CD Error" },
+                "timestamp": "${{ github.event.head_commit.timestamp }}"
+              }
+            ]
+        uses: Ilshidur/action-discord@d2594079a10f1d6739ee50a2471f0ca57418b554
+        with:
+          args: ''
