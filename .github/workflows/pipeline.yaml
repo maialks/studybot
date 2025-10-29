@@ -37,8 +37,21 @@ jobs:
       - name: build
         run: npm run build
 
-      - name: check files
-        run: ls
+      - name: pack deployment artifact
+        run: |
+          echo "empacotando artefato..."
+          mkdir -p deploy-package
+          cp -r dist deploy-package
+          cp package.json package-lock.json ecosystem.config.cjs deploy-package/
+          tar -czf deploy-package.tar.gz -C deploy package.
+          echo "artefato empacotado"
+
+      - name: upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: deploy-package
+          path: deploy-package.tar.gz
+          retention-days: 7 # padrão é muito alto (90d)
 
   deploy:
     runs-on: ubuntu-latest
@@ -50,11 +63,11 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
+      - name: download build artifact
+        uses: actions/download-artifact@v4
         with:
-          node-version: '22.2'
+          name: deploy-package
+          path: .
 
       - name: ssh setup
         run: |
@@ -63,10 +76,14 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -H 129.148.57.144 >> ~/.ssh/known_hosts
 
+      - name: copy package to VM
+        run: scp -i ~/.ssh/id_ed25519 deploy-package.tar.gz lks@192.168.0.105:~/deploy-package.tar.gz
+
       - name: deploy to vm
         run: ssh -i ~/.ssh/id_ed25519 ubuntu@129.148.57.144 "bash ~/deploy-studybot.sh"
 
       - name: bump version and push tag
+        if: success()
         uses: anothrNick/github-tag-action@4ed44965e0db8dab2b466a16da04aec3cc312fd8
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
