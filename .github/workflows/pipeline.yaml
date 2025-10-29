@@ -43,7 +43,7 @@ jobs:
           mkdir -p deploy-package
           cp -r dist deploy-package
           cp package.json package-lock.json ecosystem.config.cjs deploy-package/
-          tar -czf deploy-package.tar.gz -C deploy package.
+          tar -czf deploy-package.tar.gz -C deploy-package .
           echo "artefato empacotado"
 
       - name: upload build artifact
