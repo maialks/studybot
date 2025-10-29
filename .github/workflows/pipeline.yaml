@@ -51,12 +51,12 @@ jobs:
         with:
           name: deploy-package
           path: deploy-package.tar.gz
-          retention-days: 7 # padrão é muito alto (90d)
+          retention-days: 7
 
   deploy:
     runs-on: ubuntu-latest
     needs: [ci]
-    if: ${{ github.event_name == 'push'}}
+    if: ${{ github.event_name == 'push' }}
     concurrency: deploy-group
 
     permissions:
@@ -74,13 +74,58 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{secrets.VM_SSH_KEY}}" | base64 -d > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -H 129.148.57.144 >> ~/.ssh/known_hosts
+          ssh-keyscan -H ${{ secrets.VM_HOST }} >> ~/.ssh/known_hosts
 
       - name: copy package to VM
-        run: scp -i ~/.ssh/id_ed25519 deploy-package.tar.gz ubuntu@129.148.57.144:~/deploy-package.tar.gz
+        run: scp -i ~/.ssh/id_ed25519 deploy-package.tar.gz ubuntu@${{ secrets.VM_HOST }}:~/deploy-package.tar.gz
+
+      - name: create deploy script on VM
+        run: |
+          ssh -i ~/.ssh/id_ed25519 ubuntu@${{ secrets.VM_HOST }} 'cat > ~/deploy-studybot.sh << "EOF"
+          #!/bin/bash
+          set -e
+
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+          cd /opt/temp-studybot
+          git pull
+
+          if [ ! -f ~/deploy-package.tar.gz ]; then
+            echo "package not found"
+            exit 1
+          fi
+
+          cd /opt/studybot
+
+          if [ -d "dist" ]; then
+            rm -rf dist node_modules package.json package-lock.json
+          fi
+
+          tar -xzf ~/deploy-package.tar.gz -C .
+
+          if [ ! -d "dist" ]; then
+            echo "dist directory was not extracted"
+            exit 1
+          fi
+
+          npm ci --omit=dev
+
+          if pm2 list | grep -q studybot; then
+            echo "studybot was already running, restarting now"
+            pm2 restart studybot
+          else
+            echo "studybot starting"
+            pm2 start ecosystem.config.cjs
+          fi
+
+          pm2 save
+          rm ~/deploy-package.tar.gz
+          EOF'
+          ssh -i ~/.ssh/id_ed25519 ubuntu@${{ secrets.VM_HOST }} "chmod +x ~/deploy-studybot.sh"
 
       - name: deploy to vm
-        run: ssh -i ~/.ssh/id_ed25519 ubuntu@129.148.57.144 "bash ~/deploy-studybot.sh"
+        run: ssh -i ~/.ssh/id_ed25519 ubuntu@${{ secrets.VM_HOST }} "bash ~/deploy-studybot.sh"
 
       - name: bump version and push tag
         if: success()
@@ -89,7 +134,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
 
-      # notificação sucesso
       - name: discord notification - deploy success
         if: success()
         env:
@@ -110,7 +154,6 @@ jobs:
         with:
           args: ''
 
-  # notificação de falha
   notify_failure:
     name: discord notificaton - pipeline failure
     runs-on: ubuntu-latest
