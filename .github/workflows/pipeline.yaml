@@ -77,7 +77,7 @@ jobs:
           ssh-keyscan -H 129.148.57.144 >> ~/.ssh/known_hosts
 
       - name: copy package to VM
-        run: scp -i ~/.ssh/id_ed25519 deploy-package.tar.gz lks@192.168.0.105:~/deploy-package.tar.gz
+        run: scp -i ~/.ssh/id_ed25519 deploy-package.tar.gz ubuntu@129.148.57.144:~/deploy-package.tar.gz
 
       - name: deploy to vm
         run: ssh -i ~/.ssh/id_ed25519 ubuntu@129.148.57.144 "bash ~/deploy-studybot.sh"
